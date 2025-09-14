@@ -20,7 +20,9 @@ public class GridGenerator : MonoBehaviour
                 Vector3 relativePosition = new Vector3(i, 0, j);
                 Vector3 worldPosition = gridOrigin + relativePosition;
                 // 实例化预制件，并将其作为子物体
-                Instantiate(gridCellPrefab, worldPosition, Quaternion.identity, transform);
+                GameObject cell = Instantiate(gridCellPrefab, worldPosition, Quaternion.identity, transform);
+                // 设置tag
+                cell.tag = "GridCell";
             }
         }
     }
