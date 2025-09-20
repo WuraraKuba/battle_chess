@@ -154,6 +154,8 @@ MonoBehaviour:
   gridCellPrefab: {fileID: 703748255639180287, guid: bcfe05afca81cbe4eac84988ce359f8e, type: 3}
   width: 16
   height: 16
+  cellSize: 1
+  gridOrigin: {x: 0, y: 0, z: 0}
 --- !u!4 &143859241
 Transform:
   m_ObjectHideFlags: 0
@@ -229,7 +231,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 06788b8bfc618d64e8bfc6dbd3a9bab6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -517,9 +519,9 @@ Rigidbody:
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
   m_UseGravity: 1
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 112
   m_CollisionDetection: 0
 --- !u!136 &784890107
 CapsuleCollider:
@@ -603,7 +605,7 @@ Transform:
   m_GameObject: {fileID: 784890105}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.91, y: 0.31, z: -1.46}
+  m_LocalPosition: {x: -0.91, y: 1.26, z: -1.46}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -730,7 +732,7 @@ GameObject:
   - component: {fileID: 1865738608}
   - component: {fileID: 1865738607}
   m_Layer: 0
-  m_Name: GameManager
+  m_Name: MouseManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -748,6 +750,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5f1f62626e8bba4ea53260400875b98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  aStarPathfinder: {fileID: 1907188146}
   highlightMaterial: {fileID: 2100000, guid: b1cb42f3e8bf0c649b72c05b0d7a7541, type: 2}
 --- !u!4 &1865738608
 Transform:
@@ -764,6 +767,51 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1907188145
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1907188147}
+  - component: {fileID: 1907188146}
+  m_Layer: 0
+  m_Name: RoadFindManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1907188146
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1907188145}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de7c0aa65a8742847a7b67aa05c6c621, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gridGenerator: {fileID: 0}
+--- !u!4 &1907188147
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1907188145}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.8424908, y: -2.9827874, z: -1.8855473}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -775,3 +823,4 @@ SceneRoots:
   - {fileID: 1865738608}
   - {fileID: 333139842}
   - {fileID: 143859241}
+  - {fileID: 1907188147}

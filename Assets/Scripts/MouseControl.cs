@@ -7,6 +7,7 @@ using UnityEngine;
 // 用于鼠标相关的操作，包括选择，之类的
 public class MouseControl : MonoBehaviour
 {
+    public AStarPathfinder aStarPathfinder;
     public Material highlightMaterial;  // 拖入你创建的高亮材质
     private GameObject selectedObject;  // 存储当前选中的物体
     private Material originalMatrial;   // 存储原始材质
@@ -43,13 +44,39 @@ public class MouseControl : MonoBehaviour
                     //originalMatrial = selectedObject.GetComponent<Material>();
                     originalMatrial = selectedObject.GetComponent<MeshRenderer>().material;
                     selectedObject.GetComponent<MeshRenderer>().material = highlightMaterial;
-                    Debug.Log("已选中");
                 }
-                else
+                else  // 选中的不是新的player
                 {
-                    if (selectedObject != null)
+                    if (selectedObject != null)   // selectedObject 只可能是选中的角色
                     {
-                        selectedObject.GetComponent<MeshRenderer>().material = originalMatrial;
+                        if (hit.transform.gameObject.CompareTag("GridCell"))  // 再次点击的是一个棋盘格
+                        {
+                            // 获取移动物体起始坐标
+                            Vector3 startPosition = selectedObject.transform.position;
+                            // 获取这个棋盘格的坐标
+                            Vector3 targetPosition = hit.transform.position;
+                            // 移动选择物体的坐标
+                            //selectedObject.transform.position = targetPosition;
+                            // 调用寻路算法
+                            List<Vector3> path = aStarPathfinder.FindPath(startPosition, targetPosition);
+                            if (path != null)
+                            {
+                                // StartCoroutine : 启动协程
+                                StartCoroutine(MoveAlongPath(path));
+                                //foreach (Vector3 node in path)
+                                //{
+                                    //Debug.Log(node);
+                                    //selectedObject.transform.position = node;
+                                //}
+                                //selectedObject.transform.position = path[path.Count - 1];
+                            }
+                            else
+                            {
+                                selectedObject.GetComponent<MeshRenderer>().material = originalMatrial;
+                                selectedObject = null;
+                            }
+                           
+                        }
                     }
                     
                 }
@@ -80,5 +107,39 @@ public class MouseControl : MonoBehaviour
             }
         }
         
+    }
+
+    // 移动协程, 所谓协程
+    IEnumerator MoveAlongPath(List<Vector3> path)
+    {
+        // 确保路径不为空
+        if (path == null || path.Count == 0)
+        {
+            yield break; // 退出协程
+        }
+
+        float moveSpeed = 5f; // 移动速度
+
+        // 遍历路径中的每个节点
+        foreach (Vector3 targetNode in path)
+        {
+            // 持续移动，直到到达目标节点
+            while (selectedObject.transform.position != targetNode)
+            {
+                
+                // 朝着目标点移动
+                selectedObject.transform.position = Vector3.MoveTowards(
+                    selectedObject.transform.position,
+                    targetNode,
+                    moveSpeed * Time.deltaTime
+                );
+
+                // 告诉unity， 下一次循环等到下一帧再运行
+                yield return null; // 等待下一帧
+            }
+        }
+        // === 移动完成！在这里取消选中状态 ===
+        selectedObject.GetComponent<MeshRenderer>().material = originalMatrial;
+        selectedObject = null;
     }
 }

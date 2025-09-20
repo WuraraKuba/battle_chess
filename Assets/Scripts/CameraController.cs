@@ -32,7 +32,6 @@ public class CameraController : MonoBehaviour
             currentY = Mathf.Clamp(currentY, -60f, 60f);
         }
 
-        // https://pan.baidu.com/s/10UYrctQQ1R40pYF5at3EDQ?pwd=y2ug
         if (Input.GetMouseButton(0))  // 按住左键时进行平移
         {
             float panX = Input.GetAxis("Mouse X") * panSpeed;
