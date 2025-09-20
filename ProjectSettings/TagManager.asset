@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 2
   tags:
   - GridCell
+  - CinemachineTarget
+  - enemy
   layers:
   - Default
   - TransparentFX
@@ -13,11 +15,11 @@ TagManager:
   - Water
   - UI
   - chess
-  - 
-  - 
-  - 
-  - 
-  - 
+  - environment
+  - unit
+  - obstacle
+  - trigger
+  - bullet
   - 
   - 
   - 

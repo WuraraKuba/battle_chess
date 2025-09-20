@@ -6,10 +6,10 @@ using UnityEngine;
 public class CameraController : MonoBehaviour
 {
     public Transform target;   // 摄像机围绕旋转的目标
-    public float distance = 10f;  // 摄像机与目标的距离
+    public float distance = 100f;  // 摄像机与目标的距离
     public float rotationSpeed = 5f;  // 旋转速度
     public float panSpeed = 0.5f;   // 平移速度
-    public float zoomSpeed = 1f;  // 缩放速度
+    public float zoomSpeed = 5f;  // 缩放速度
 
     private float currentX = 0f;  // 摄像机在垂直方向上的总旋转量
     private float currentY = 0f;  // 摄像机在水平方向上的总旋转量
@@ -32,8 +32,7 @@ public class CameraController : MonoBehaviour
             currentY = Mathf.Clamp(currentY, -60f, 60f);
         }
 
-        // https://pan.baidu.com/s/10UYrctQQ1R40pYF5at3EDQ?pwd=y2ug
-        if (Input.GetMouseButton(0))  // 按住左键时进行平移
+        if (Input.GetMouseButton(2))  // 按住中键时进行平移
         {
             float panX = Input.GetAxis("Mouse X") * panSpeed;
             float panY = Input.GetAxis("Mouse Y") * panSpeed;
@@ -51,7 +50,7 @@ public class CameraController : MonoBehaviour
         if (scrollDelta != 0)
         {
             distance -= scrollDelta * zoomSpeed;
-            distance = Mathf.Clamp(distance, 5f, 20f);  // 限制缩放距离
+            distance = Mathf.Clamp(distance, 5f, 500f);  // 限制缩放距离
         }
     }
 
