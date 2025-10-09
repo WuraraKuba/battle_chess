@@ -9390,6 +9390,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5f1f62626e8bba4ea53260400875b98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  aStarPathfinder: {fileID: 1907188146}
   highlightMaterial: {fileID: 2100000, guid: b1cb42f3e8bf0c649b72c05b0d7a7541, type: 2}
   gridGenerator: {fileID: 143859240}
   gridManager: {fileID: 286139064}

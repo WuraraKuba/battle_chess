@@ -8,6 +8,7 @@ using UnityEngine;
 // 用于鼠标相关的操作，包括选择，之类的
 public class MouseControl : MonoBehaviour
 {
+    public AStarPathfinder aStarPathfinder;
     public Material highlightMaterial;  // 拖入你创建的高亮材质
     private GameObject selectedObject;  // 存储当前选中的物体
     private Material originalMatrial;   // 存储原始材质
@@ -263,6 +264,40 @@ public class MouseControl : MonoBehaviour
             animator.SetFloat("Speed", 0f);
             animator.SetFloat("MotionSpeed", 0f); // 恢复到 Idle 状态
         }
+        selectedObject.GetComponent<MeshRenderer>().material = originalMatrial;
+        selectedObject = null;
+    }
+
+    // 移动协程, 所谓协程
+    IEnumerator MoveAlongPath(List<Vector3> path)
+    {
+        // 确保路径不为空
+        if (path == null || path.Count == 0)
+        {
+            yield break; // 退出协程
+        }
+
+        float moveSpeed = 5f; // 移动速度
+
+        // 遍历路径中的每个节点
+        foreach (Vector3 targetNode in path)
+        {
+            // 持续移动，直到到达目标节点
+            while (selectedObject.transform.position != targetNode)
+            {
+                
+                // 朝着目标点移动
+                selectedObject.transform.position = Vector3.MoveTowards(
+                    selectedObject.transform.position,
+                    targetNode,
+                    moveSpeed * Time.deltaTime
+                );
+
+                // 告诉unity， 下一次循环等到下一帧再运行
+                yield return null; // 等待下一帧
+            }
+        }
+        // === 移动完成！在这里取消选中状态 ===
         selectedObject.GetComponent<MeshRenderer>().material = originalMatrial;
         selectedObject = null;
     }
