@@ -116,10 +116,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 9193521590152920335}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dbcd95511caabee4a9858eb3fc6e1d17, type: 3}
+  m_Script: {fileID: 11500000, guid: d6e3771e8f274334695e4b3cf1260b5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damageAmount: 20
+  damageAmount: 50
   lifetime: 5
   owner: {fileID: 0}
 --- !u!54 &5936069453481998968

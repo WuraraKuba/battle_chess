@@ -269,7 +269,7 @@ public class MouseControl : MonoBehaviour
     }
 
     // 移动协程, 所谓协程
-    IEnumerator MoveAlongPath(List<Vector3> path)
+    /*IEnumerator MoveAlongPath(List<Vector3> path)
     {
         // 确保路径不为空
         if (path == null || path.Count == 0)
@@ -300,5 +300,5 @@ public class MouseControl : MonoBehaviour
         // === 移动完成！在这里取消选中状态 ===
         selectedObject.GetComponent<MeshRenderer>().material = originalMatrial;
         selectedObject = null;
-    }
+    }*/
 }

@@ -6,7 +6,7 @@ namespace Ilumisoft.HealthSystem.UI
     [AddComponentMenu("Health System/UI/Healthbar")]
     public class Healthbar : MonoBehaviour
     {
-        [field:SerializeField]
+        [field: SerializeField]
         public Unit targetUnit { get; set; }
 
         [SerializeField]
@@ -47,7 +47,7 @@ namespace Ilumisoft.HealthSystem.UI
             }
 
             currentValue = Mathf.MoveTowards(currentValue, targetUnit.CurrentHealthFloat, Time.deltaTime * changeSpeed);
-            
+
             UpdateFillbar();
             UpdateVisibility();
         }
