@@ -12,7 +12,7 @@ namespace Ilumisoft.HealthSystem.UI
         {
             if (Player != null)
             {
-                //Health = Player.GetComponent<HealthComponent>();
+                // Health = Player.GetComponent<HealthComponent>();
             }
         }
     }
