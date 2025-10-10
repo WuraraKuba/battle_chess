@@ -51,11 +51,13 @@ public class MouseControl : MonoBehaviour
             // 检测鼠标左键是否被按下
             if (Input.GetMouseButtonDown(0))
             {
-                Debug.Log(hit.transform.gameObject.layer);
                 if (hit.transform.gameObject.layer == unitLayerIndex)
                 {
                     // **情况 A: 点击了角色 (选择)**
                     SelectUnit(hit.transform.gameObject.GetComponent<UnitController>());
+
+                    // 高亮
+
                 }
                 else if (hit.transform.gameObject.layer == environmentLayerIndex)
                 {
@@ -195,6 +197,8 @@ public class MouseControl : MonoBehaviour
         // 设置新的选中角色
         selectedUnit = unit;
         selectedUnit.Select();
+        // 高亮
+        selectedUnit.TurnOnSelector();
         Debug.Log(selectedUnit.name + " 已被选中。");
     }
 

@@ -27,6 +27,8 @@ public class UnitController : MonoBehaviour
 
     // 存储自身状态
     private Unit currentUnit;
+    [Header("选择属性")]
+    public SpriteRenderer selectImage;
 
     // 用于存方格的数据结构
     public class GridNode
@@ -43,9 +45,10 @@ public class UnitController : MonoBehaviour
     // 用于获取棋盘的属性
     private void Awake()  // 脚本被实例化后第一个被调用的函数（比start还要前，start在update前），可以理解为实例生命周期的第一个函数
     {
+        selectImage.enabled = false;
         navMeshAgent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
-        animator.SetFloat("MotionSpeed", 1f);
+        animator.SetFloat("MotionSpeed", 2f);
         // 角色相关初始化
         currentUnit = GetComponent<Unit>();
         currentUnit.currentHealth = currentUnit.maxHealth;
@@ -59,7 +62,14 @@ public class UnitController : MonoBehaviour
 
     private void Update()
     {
-        
+        if (isSelected) 
+        {
+            TurnOnSelector();
+        }
+        else
+        {
+            TurnOffSelector();
+        }
         float currentSpeed = navMeshAgent.velocity.magnitude;
         if (currentUnit.ifInMove())
         {
@@ -86,7 +96,7 @@ public class UnitController : MonoBehaviour
         }*/
         //Debug.Log(currentUnit.getState());
     }
-    // 清除空敌人
+    /*// 清除空敌人
     private void CleanTargetList()
     {
         targetsInRange.RemoveAll(target => target == null);
@@ -175,7 +185,7 @@ public class UnitController : MonoBehaviour
                 currentUnit.nextFireTime = Time.time + currentUnit.fireRate;
             }
         }
-    }
+    }*/
     // 受击逻辑
     public void TakeDamage(int damage)
     {
@@ -312,9 +322,11 @@ public class UnitController : MonoBehaviour
         // 一开始进入待机状态
         if (currentUnit.ifInMove()) 
         {
+            isSelected = false;
             currentUnit.changeToIdle();
         }
-
+        // 取消选择
+        
         /*else if (currentUnit.ifInIdle() && targetsInRange.Count > 0)
         {
             // 范围里有敌人！
@@ -490,4 +502,16 @@ public class UnitController : MonoBehaviour
         path.Reverse();
         return path;
     }*/
+
+    // 选择高亮相关
+    public void TurnOffSelector()
+    {
+        selectImage.enabled = false;
+    }
+
+    //Turns on the sprite renderer
+    public void TurnOnSelector()
+    {
+        selectImage.enabled = true;
+    }
 }

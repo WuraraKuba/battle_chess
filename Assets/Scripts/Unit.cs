@@ -12,6 +12,7 @@ public class Unit : MonoBehaviour
     public float currentHealth;
 
     [Header("战斗属性")]
+    public bool autoFire = false; 
     public int attackDamage = 50;
     public int defense = 10;
     public float fireRate = 0.1f;
@@ -22,6 +23,7 @@ public class Unit : MonoBehaviour
 
     [Header("移动属性")]
     public int movementRange = 1;
+
 
     // 单位状态
     public enum UnitState
@@ -37,10 +39,12 @@ public class Unit : MonoBehaviour
 
     public float CurrentHealthFloat { get { return currentHealth; } } // 转换为 float
     public float MaxHealthFloat { get { return maxHealth; } }       // 转换为 float
+    // 初始化选择状态
     public UnitState getState()
     {
         return state;
     }
+
     public bool ifInMove()
     {
         return state==UnitState.Moving;
@@ -58,9 +62,9 @@ public class Unit : MonoBehaviour
 
     public void changeToCombat()
     {
-        Debug.Log("ChangeToCombat");
         state = UnitState.Attacking;
     }
+
 
     public void changeToMove()
     {
@@ -75,5 +79,7 @@ public class Unit : MonoBehaviour
     {
         state = UnitState.Dead;
     }
+
+
 
 }
