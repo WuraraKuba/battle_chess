@@ -279,36 +279,38 @@ public class UnitController : MonoBehaviour
     // 行进逻辑
     public void MoveTo(Vector3 destination)
     {
-        Debug.Log("start_path");
-        // 检查角色的状态
-        if (currentUnit.ifInIdle() || currentUnit.ifInMove())
-        {
-            currentUnit.changeToMove();
-            animator.SetFloat("Speed", 2f);   // 初始速度
-            if (navMeshAgent != null)
-            {
-                // 清理当前寻路路径（可选，但推荐）
-                navMeshAgent.ResetPath();
 
-                // 设置新的目的地，NavMeshAgent 会自动计算路径并移动
-                navMeshAgent.SetDestination(destination);
-            }
-        }
-        else if (currentUnit.ifInCombat())
-        {
-            // 结束战斗动画
-            animator.SetBool("InCombat", false);
-            currentUnit.changeToMove();
-            if (navMeshAgent != null)
+            Debug.Log("start_path");
+            // 检查角色的状态
+            if (currentUnit.ifInIdle() || currentUnit.ifInMove())
             {
-                // 清理当前寻路路径（可选，但推荐）
-                navMeshAgent.ResetPath();
+                currentUnit.changeToMove();
+                animator.SetFloat("Speed", 2f);   // 初始速度
+                if (navMeshAgent != null)
+                {
+                    // 清理当前寻路路径（可选，但推荐）
+                    navMeshAgent.ResetPath();
 
-                // 设置新的目的地，NavMeshAgent 会自动计算路径并移动
-                navMeshAgent.SetDestination(destination);
+                    // 设置新的目的地，NavMeshAgent 会自动计算路径并移动
+                    navMeshAgent.SetDestination(destination);
+                }
             }
-        }
+            else if (currentUnit.ifInCombat())
+            {
+                // 结束战斗动画
+                animator.SetBool("InCombat", false);
+                currentUnit.changeToMove();
+                if (navMeshAgent != null)
+                {
+                    // 清理当前寻路路径（可选，但推荐）
+                    navMeshAgent.ResetPath();
+
+                    // 设置新的目的地，NavMeshAgent 会自动计算路径并移动
+                    navMeshAgent.SetDestination(destination);
+                }
+            }
         
+       
     }
 
     private void movementFinshed()
@@ -316,7 +318,6 @@ public class UnitController : MonoBehaviour
         // 一开始进入待机状态
         if (currentUnit.ifInMove()) 
         {
-            isSelected = false;
             currentUnit.changeToIdle();
         }
         // 取消选择

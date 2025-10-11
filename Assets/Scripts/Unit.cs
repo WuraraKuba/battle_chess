@@ -10,6 +10,7 @@ public class Unit : MonoBehaviour
     public Vector3 healthBarOffset = new Vector3(0, 1.8f, 0); // 调整 Y 值，让血条位于士兵头顶
     public float maxHealth = 100;
     public float currentHealth;
+    public string chessName;
 
     [Header("战斗属性")]
     public bool autoFire = false; 

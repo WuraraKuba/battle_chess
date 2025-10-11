@@ -74,6 +74,17 @@ public class CommandController : MonoBehaviour
 
     private IEnumerator TransitionTimeScale(float targetScale)
     {
+
+        if (UIController.Instance != null) // 使用单例来获取 UIController
+        {
+
+            // 如果目标是慢速 (targetScale < originalTimeScale)，则显示面板
+            bool shouldShowUI = (targetScale < originalTimeScale);
+
+            // 调用 UIController 的新方法
+            UIController.Instance.SetTimeWarpUIVisibility(shouldShowUI);
+        }
+
         isTimeWarping = (targetScale < originalTimeScale);
         float time = 0;
         float startScale = Time.timeScale;

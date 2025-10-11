@@ -6,8 +6,14 @@ public class UIController : MonoBehaviour
 {
     public static UIController Instance;
 
-    [Header("UI Prefabs")]
-    public GameObject damageTextPrefab; // 必须拖入带有 DamageIndicator 脚本的 Prefab
+    [Header("伤害显示")]
+    public GameObject damageTextPrefab; 
+
+    [Header("全局时间扭曲 UI")]
+    public GameObject timeWarpOverlayPanel;
+
+    [Header("用来调取按钮的")]
+    public SkillCommandPanelManager skillPanelManager;
 
     private void Awake()
     {
@@ -21,6 +27,11 @@ public class UIController : MonoBehaviour
         {
             Destroy(gameObject);
         }
+        if (timeWarpOverlayPanel != null)
+        {
+            timeWarpOverlayPanel.SetActive(false);
+        }
+
     }
 
     // 供 UnitController 调用的核心公共方法
@@ -43,5 +54,46 @@ public class UIController : MonoBehaviour
             string damageString = damage.ToString();
             indicator.Initialize(damageString, color);
         }
+    }
+
+    public void SetTimeWarpUIVisibility(bool isVisible)
+    {
+        // 1. 控制全局半透明面板
+        if (timeWarpOverlayPanel != null)
+        {
+            timeWarpOverlayPanel.SetActive(isVisible);
+        }
+
+        if (skillPanelManager != null)
+        {
+            if (isVisible)
+            {
+                // TODO: 假设有一个地方可以获取所有友方单位列表
+                List<Unit> playerUnits = GetPlayerUnitsList();
+                skillPanelManager.ShowUnitButtons(playerUnits);
+            }
+            else
+            {
+                skillPanelManager.ClearButtons();
+            }
+        }
+    }
+
+    private List<Unit> GetPlayerUnitsList()
+    {
+        // 这里的实现取决于你的游戏结构。
+        // 示例：假设所有友方单位都有 "PlayerUnit" 标签
+        List<Unit> units = new List<Unit>();
+        GameObject[] unitObjects = GameObject.FindGameObjectsWithTag("PlayerUnit");
+
+        foreach (GameObject obj in unitObjects)
+        {
+            Unit unit = obj.GetComponent<Unit>();
+            if (unit != null)
+            {
+                units.Add(unit);
+            }
+        }
+        return units;
     }
 }

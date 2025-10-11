@@ -7,6 +7,8 @@ TagManager:
   - GridCell
   - CinemachineTarget
   - enemy
+  - Selectable_Char
+  - PlayerUnit
   layers:
   - Default
   - TransparentFX
