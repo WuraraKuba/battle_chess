@@ -42,11 +42,11 @@ public class BattleController : MonoBehaviour
         // 1. 确保是敌人，且当前状态为 Combat
         if (currentUnit.ifInIdle())
         {
-
+            // 每次移动后，重新索敌
+            targetsInRange.Clear();
             // 检测是否有敌人，将敌人存入targetsInRange
             if (other.CompareTag("enemy"))
             {
-                targetsInRange.Clear();
                 targetsInRange.Add(other.gameObject);
             }
             // 如果敌人的数目大于0，将状态转换为战斗状态
@@ -103,7 +103,6 @@ public class BattleController : MonoBehaviour
                 {
                     bulletScript.owner = this.gameObject; // 将士兵对象设置为子弹的 owner
                 }
-                Debug.Log(bulletScript.owner);
                 // 2. 计算散布
                 Quaternion spreadRotation = Quaternion.Euler(
                     Random.Range(-currentUnit.spreadAngle, currentUnit.spreadAngle),
@@ -115,7 +114,6 @@ public class BattleController : MonoBehaviour
                 Rigidbody rb = bulletInstance.GetComponent<Rigidbody>();
                 if (rb != null)
                 {
-                    Debug.Log("发射子弹");
                     // 结合枪口方向和散布
                     Vector3 shootDirection = currentUnit.muzzlePoint.forward;
                     Vector3 finalDirection = spreadRotation * shootDirection;

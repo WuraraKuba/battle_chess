@@ -50,6 +50,7 @@ namespace Ilumisoft.HealthSystem.UI
 
             UpdateFillbar();
             UpdateVisibility();
+            transform.rotation = Camera.main.transform.rotation;
         }
 
         private void AlignWithCamera()

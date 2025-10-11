@@ -633,6 +633,9 @@ PrefabInstance:
       addedObject: {fileID: 1123870494}
     - targetCorrespondingSourceObject: {fileID: 100052, guid: f4209d51d1ad0434299f2d498ee076ba, type: 3}
       insertIndex: -1
+      addedObject: {fileID: 1123870505}
+    - targetCorrespondingSourceObject: {fileID: 100052, guid: f4209d51d1ad0434299f2d498ee076ba, type: 3}
+      insertIndex: -1
       addedObject: {fileID: 1123870500}
     - targetCorrespondingSourceObject: {fileID: 100052, guid: f4209d51d1ad0434299f2d498ee076ba, type: 3}
       insertIndex: -1
@@ -640,9 +643,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 100052, guid: f4209d51d1ad0434299f2d498ee076ba, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1123870506}
-    - targetCorrespondingSourceObject: {fileID: 100052, guid: f4209d51d1ad0434299f2d498ee076ba, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1123870505}
   m_SourcePrefab: {fileID: 100100000, guid: f4209d51d1ad0434299f2d498ee076ba, type: 3}
 --- !u!1 &143859239
 GameObject:
@@ -5459,11 +5459,11 @@ MonoBehaviour:
   maxHealth: 100
   currentHealth: 0
   autoFire: 0
-  attackDamage: 20
+  attackDamage: 30
   defense: 10
   fireRate: 0.5
   nextFireTime: 10
-  spreadAngle: 5
+  spreadAngle: 1
   bulletPrefab: {fileID: 9193521590152920335, guid: f5a1f4b7db9a0aa47bf3d39220cc3e7f, type: 3}
   muzzlePoint: {fileID: 514699269}
   movementRange: 1
@@ -7555,7 +7555,7 @@ MonoBehaviour:
   currentHealth: 0
   autoFire: 0
   attackDamage: 50
-  defense: 100
+  defense: 10
   fireRate: 0.1
   nextFireTime: 0
   spreadAngle: 1
@@ -8215,6 +8215,51 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 8
   m_Center: {x: 0, y: 1, z: 0}
+--- !u!1 &2111097405
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2111097407}
+  - component: {fileID: 2111097406}
+  m_Layer: 0
+  m_Name: UIManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2111097406
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2111097405}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1fa93598362479a4489ece686b2e3ab0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damageTextPrefab: {fileID: 8919613297048056866, guid: fcd0cc873dd91384984ff9257efc4eca, type: 3}
+--- !u!4 &2111097407
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2111097405}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -8.954132, y: 9.076813, z: 76.659}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &2136136467
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8320,3 +8365,4 @@ SceneRoots:
   - {fileID: 94140847}
   - {fileID: 427503149}
   - {fileID: 742209451}
+  - {fileID: 2111097407}

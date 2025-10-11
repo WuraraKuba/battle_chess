@@ -29,7 +29,6 @@ public class MouseControl : MonoBehaviour
         RaycastIgnoreLayerMask = ~LayerMask.GetMask("trigger", "Ignore Raycast");
         environmentLayerIndex = LayerMask.NameToLayer("environment");
         unitLayerIndex = LayerMask.NameToLayer("unit");
-        Debug.Log("RIght" + RaycastIgnoreLayerMask);
     }
     // Start is called before the first frame update
     void Start()
@@ -204,9 +203,7 @@ public class MouseControl : MonoBehaviour
 
     void TryMoveSelectedUnit(Vector3 hitPoint)
     {
-        Debug.Log("run");
         if (selectedUnit == null) return;
-        Debug.Log("run2");
         // 1. 正常的 NavMesh 验证流程
         Vector3 gridInfo = gridManager.WorldToGridCoordinates(hitPoint);
 

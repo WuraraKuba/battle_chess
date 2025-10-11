@@ -30,18 +30,6 @@ public class UnitController : MonoBehaviour
     [Header("选择属性")]
     public SpriteRenderer selectImage;
 
-    // 用于存方格的数据结构
-    public class GridNode
-    {
-        public Vector3 position;
-        public GridNode parent;
-
-        public GridNode(Vector3 pos, GridNode p)
-        {
-            position = pos;
-            parent = p;
-        }
-    }
     // 用于获取棋盘的属性
     private void Awake()  // 脚本被实例化后第一个被调用的函数（比start还要前，start在update前），可以理解为实例生命周期的第一个函数
     {
@@ -189,10 +177,16 @@ public class UnitController : MonoBehaviour
     // 受击逻辑
     public void TakeDamage(int damage)
     {
-        int actualDamage = Mathf.Max(1, damage - currentUnit.defense);
-        Debug.Log("伤害"+ actualDamage);
-        Debug.Log("防御"+ currentUnit.defense);
+        float actualDamage = Mathf.Max(1, damage - currentUnit.defense);
         currentUnit.currentHealth = Mathf.Max(currentUnit.currentHealth - actualDamage, 0);
+        if (UIController.Instance != null)
+        {
+            // 通知 UI 管理器展示伤害
+            UIController.Instance.DisplayDamage(
+                actualDamage,
+                transform.position
+            );
+        }
         if (currentUnit.currentHealth <= 0 && currentUnit.state != UnitState.Dead)
         {
             Die();
