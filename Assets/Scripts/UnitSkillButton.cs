@@ -10,18 +10,43 @@ public class UnitSkillButton : MonoBehaviour
 
     // 存储它代表的单位对象
     public Unit associatedUnit;
+    // 存储对象所进行的操作
+    public BattleController associatedBattleController;
 
 
     // 初始化按钮（由 SkillCommandPanelManager 调用）
-    public void Initialize(Unit unit)
+    public void Initialize(Unit unitData)
     {
-        associatedUnit = unit;
-        buttonText.text = unit.chessName;
+        BattleController battleController = unitData.GetFlatmateBattleController();
+        associatedBattleController = battleController;
+        associatedUnit = unitData;
 
-        // 暂时关闭按钮的交互性，直到选择目标
-        GetComponent<Button>().interactable = false;
+        buttonText.text = unitData.chessName;
 
-        // 【TODO】添加按钮点击事件监听
+
+        Button buttonComponent = GetComponent<Button>();
+        if (buttonComponent != null)
+        {
+            buttonComponent.interactable = true;
+            buttonComponent.onClick.RemoveAllListeners();
+            buttonComponent.onClick.AddListener(OnSkillButtonClicked);
+        }
+    }
+
+    private void OnSkillButtonClicked()
+    {
+        if (associatedBattleController != null)
+        {
+            Debug.Log($"指挥 {associatedBattleController.gameObject.name} 激活技能！");
+            // 调用 UnitController 的方法
+            associatedBattleController.ActivateSkill();
+
+            // 关闭子弹时间 (假设 TimeWarpCommandController 是单例)
+            // if (TimeWarpCommandController.Instance != null)
+            // {
+            //     TimeWarpCommandController.Instance.SetTimeWarpActive(false); 
+            // }
+        }
     }
 
 }

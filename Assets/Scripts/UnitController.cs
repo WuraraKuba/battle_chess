@@ -10,13 +10,7 @@ using static Unit;
 // 网格地图寻路算法
 public class UnitController : MonoBehaviour
 {
-    // 临时方案，未来应该尝试做一个参数传入
-    /*public GridGenerator gridGenerator;
-    public GridManager gridManager;
-    private int width;
-    private int height;
-    private float cellSize = 1f;
-    private Vector3 gridOrigin;*/
+
     private NavMeshAgent navMeshAgent;
     private Animator animator;
     public GameObject SelectionIndicator;
@@ -50,7 +44,7 @@ public class UnitController : MonoBehaviour
 
     private void Update()
     {
-        if (isSelected) 
+        if (isSelected)
         {
             TurnOnSelector();
         }
@@ -69,111 +63,7 @@ public class UnitController : MonoBehaviour
             // 进入移动停止后的逻辑
             movementFinshed();
         }
-/*        if (currentUnit.ifInCombat()) 
-        {
-            HandleShooting();
-        }*/
-        /*if (currentUnit.ifInIdle())
-        {
-            Debug.Log(currentSpeed);
-            animator.SetFloat("Speed", currentSpeed);
-            if (currentSpeed < 1f)
-            {
-                currentUnit.changeToIdle();
-            } 
-        }*/
-        //Debug.Log(currentUnit.getState());
     }
-    /*// 清除空敌人
-    private void CleanTargetList()
-    {
-        targetsInRange.RemoveAll(target => target == null);
-    }
-    // 进入战斗逻辑
-    private void OnTriggerStay(Collider other)
-    {
-        CleanTargetList();
-        // 1. 确保是敌人，且当前状态为 Combat
-        if (currentUnit.ifInIdle())
-        {
-            
-            // 检测是否有敌人，将敌人存入targetsInRange
-            if (other.CompareTag("enemy"))
-            {
-                targetsInRange.Clear();
-                targetsInRange.Add(other.gameObject);
-            }
-            // 如果敌人的数目大于0，将状态转换为战斗状态
-            if (targetsInRange.Count > 0)
-            {
-                currentUnit.changeToCombat();
-            }
-        }
-        else if (currentUnit.ifInCombat()) 
-        {
-            // 如果有敌人，播放战斗动画
-            if (targetsInRange.Count > 0)
-            {
-                // 面向第一个目标
-                Vector3 lookAtPos = targetsInRange[0].transform.position;
-                // 消除 Y 轴影响，只在水平面旋转
-                lookAtPos.y = transform.position.y;
-
-                // 平滑转向目标 (Slerp 或 Lerp)
-                Quaternion targetRotation = Quaternion.LookRotation(lookAtPos - transform.position);
-                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f); // 10f 是旋转速度
-                // 攻击
-                HandleShooting();
-                animator.SetBool("InCombat", true);
-            }
-            // 如果没有敌人，进入待机状态
-            else
-            {
-                animator.SetBool("InCombat", false);
-                currentUnit.changeToIdle();
-            }
-        }
-    }
-    // 攻击逻辑
-    private void HandleShooting()
-    {
-        if (currentUnit.ifInCombat())
-        {
-            if (Time.time >= currentUnit.nextFireTime)
-            {
-                // 1. 生成子弹
-                GameObject bulletInstance = Instantiate(currentUnit.bulletPrefab, currentUnit.muzzlePoint.position, currentUnit.muzzlePoint.rotation);
-                BulletController bulletScript = bulletInstance.GetComponent<BulletController>();
-                if (bulletScript != null)
-                {
-                    bulletScript.owner = this.gameObject; // 将士兵对象设置为子弹的 owner
-                }
-                Debug.Log(bulletScript.owner);
-                // 2. 计算散布
-                Quaternion spreadRotation = Quaternion.Euler(
-                    Random.Range(-currentUnit.spreadAngle, currentUnit.spreadAngle),
-                    Random.Range(-currentUnit.spreadAngle, currentUnit.spreadAngle),
-                    0
-                );
-
-                // 3. 应用散布并给予初始速度
-                Rigidbody rb = bulletInstance.GetComponent<Rigidbody>();
-                if (rb != null)
-                {
-                    Debug.Log("发射子弹");
-                    // 结合枪口方向和散布
-                    Vector3 shootDirection = currentUnit.muzzlePoint.forward;
-                    Vector3 finalDirection = spreadRotation * shootDirection;
-
-                    // 假设子弹速度是 30f
-                    rb.velocity = finalDirection * 300f;
-                }
-
-                // 4. 设置下次射击时间
-                currentUnit.nextFireTime = Time.time + currentUnit.fireRate;
-            }
-        }
-    }*/
     // 受击逻辑
     public void TakeDamage(int damage)
     {
@@ -228,54 +118,7 @@ public class UnitController : MonoBehaviour
         // 5. 销毁对象
         Destroy(gameObject, 0.5f);
     }
-    // 进入战斗逻辑
-    /*private void OnTriggerEnter(Collider other)
-    {
-        // 检查进入的物体是否是敌人（通过 Tag）
-        if (other.CompareTag("enemy"))
-        {
-
-            // 避免重复添加，虽然 List 通常会处理
-            if (!targetsInRange.Contains(other.gameObject))
-            {
-                targetsInRange.Add(other.gameObject);
-                Debug.Log("发现目标：" + other.gameObject.name + "，当前范围内有目标数量: " + targetsInRange.Count);
-*//*                Debug.Log(currentUnit.getState());
-                // 【核心逻辑：如果范围内部存在敌人，则播放战斗动画】
-                if (currentUnit.ifInIdle())
-                {
-                    Debug.Log("Hey");
-                    if (targetsInRange.Count > 0)
-                    {
-                        currentUnit.changeToCombat();
-                        animator.SetBool("InCombat", true);
-                        //PlayAttackAnimation();
-                    }
-                }*//*
-
-            }
-        }
-    }*/
-/*    private void OnTriggerExit(Collider other)
-    {
-        // 检查离开的物体是否是敌人
-        if (other.CompareTag("enemy"))
-        {
-            if (targetsInRange.Contains(other.gameObject))
-            {
-                targetsInRange.Remove(other.gameObject);
-                Debug.Log("目标离开范围，当前范围内目标数量: " + targetsInRange.Count);
-
-                // 【核心逻辑：如果范围内没有敌人了，则停止战斗动画】
-                if (targetsInRange.Count == 0)
-                {
-                    currentUnit.changeToIdle();
-                    animator.SetBool("InCombat", false);
-                    //StopAttackAnimation();
-                }
-            }
-        }
-    }*/
+    
     // 行进逻辑
     public void MoveTo(Vector3 destination)
     {
@@ -309,8 +152,6 @@ public class UnitController : MonoBehaviour
                     navMeshAgent.SetDestination(destination);
                 }
             }
-        
-       
     }
 
     private void movementFinshed()

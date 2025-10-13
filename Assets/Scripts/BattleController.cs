@@ -16,21 +16,9 @@ public class BattleController : MonoBehaviour
 
     private void Awake()
     {
-        animator = GetComponent<Animator>();
-        currentUnit = GetComponent<Unit>();
+        animator = GetComponentInParent<Animator>();
+        currentUnit = GetComponentInParent<Unit>();
     }
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     private void CleanTargetList()
     {
         targetsInRange.RemoveAll(target => target == null);
@@ -44,11 +32,24 @@ public class BattleController : MonoBehaviour
         {
             // 每次移动后，重新索敌
             targetsInRange.Clear();
-            // 检测是否有敌人，将敌人存入targetsInRange
-            if (other.CompareTag("enemy"))
+            string currentTag = transform.parent.gameObject.tag;
+            if (currentTag == "enemy")
             {
-                targetsInRange.Add(other.gameObject);
+                if (other.CompareTag("PlayerUnit"))
+                {
+                    targetsInRange.Add(other.gameObject);
+                }
             }
+            if (currentTag == "PlayerUnit")
+            {
+                if (other.CompareTag("enemy"))
+                {
+                    targetsInRange.Add(other.gameObject);
+                    Debug.Log("敌人" + other.gameObject);
+                }
+            }
+            // 检测是否有敌人，将敌人存入targetsInRange
+            
             // 如果敌人的数目大于0，将状态转换为战斗状态
             if (targetsInRange.Count > 0)
             {
@@ -63,11 +64,12 @@ public class BattleController : MonoBehaviour
                 // 面向第一个目标
                 Vector3 lookAtPos = targetsInRange[0].transform.position;
                 // 消除 Y 轴影响，只在水平面旋转
-                lookAtPos.y = transform.position.y;
+
+                lookAtPos.y = transform.parent.position.y;
 
                 // 平滑转向目标 (Slerp 或 Lerp)
-                Quaternion targetRotation = Quaternion.LookRotation(lookAtPos - transform.position);
-                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 10f); // 10f 是旋转速度
+                Quaternion targetRotation = Quaternion.LookRotation(lookAtPos - transform.parent.position);
+                transform.parent.rotation = Quaternion.Slerp(transform.parent.rotation, targetRotation, Time.deltaTime * 10f); // 10f 是旋转速度
                 // 攻击
                 HandleShooting();
                 animator.SetBool("InCombat", true);
@@ -128,6 +130,11 @@ public class BattleController : MonoBehaviour
         }
     }
 
-    
+    public void ActivateSkill()
+    {
+        Debug.Log("Fire");
+    }
+
+
 
 }

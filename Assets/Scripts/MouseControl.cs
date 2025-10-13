@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 // 用于鼠标相关的操作，包括选择，之类的
 public class MouseControl : MonoBehaviour
@@ -39,14 +42,25 @@ public class MouseControl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // 检查是否在UI上（针对鼠标）
+
+        // if (EventSystem.current.IsPointerOverGameObject(-1))
+        int pointerId = Pointer.current != null ? Pointer.current.deviceId : -1;
+
+        bool isOverUI = EventSystem.current != null && EventSystem.current.IsPointerOverGameObject(pointerId);
+        if (IsPointerOverUIObject())
+        {
+            // 鼠标在UI上，不执行射线逻辑
+            return;
+        }
         // 无论鼠标点击与否，都创建一个从摄影机位置向鼠标位置发射的射线
+        // 这个是用于物理世界检测的
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         // 用于存储射线检测的结果
         RaycastHit hit;
         // 检测射线是否接触到物体
         if (Physics.Raycast(ray, out hit, 1000f, RaycastIgnoreLayerMask))  //, 100f, ~0, QueryTriggerInteraction.Ignore
         {
-            
             // 检测鼠标左键是否被按下
             if (Input.GetMouseButtonDown(0))
             {
@@ -67,76 +81,6 @@ public class MouseControl : MonoBehaviour
                     }
                     // 否则：没有选中角色，点击格子无效
                 }
-
-                /*                if (hit.transform.gameObject.CompareTag("Player"))   // Tag用于处理分类情况
-                                {
-                                    if (selectedObject != null)
-                                    {  // 如果之前选过，那么将原来选过的材质替换为原始材质后再进行下一步操作
-                                        selectedObject.GetComponent<MeshRenderer>().material = originalMatrial;
-                                    }
-                                    selectedObject = hit.transform.gameObject;
-                                    // 获取角色属性
-                                    Unit unitProperties = selectedObject.GetComponent<Unit>();
-                                    // 角色移动属性
-                                    int movementRange = unitProperties.movementRange;
-                                    Vector3 startPosition = selectedObject.transform.position;
-                                    // 显示移动范围
-                                   *//* List<Vector3> reachablePositions = aStarPathfinder.FindReachableNodes(startPosition, movementRange);
-                                    foreach (Vector3 cellPosition in gridGenerator.gridCells.Keys)
-                                    {
-                                        //Debug.Log(cellPosition);
-                                    }*//*
-                                    // 对处于这些列表中的坐标，修改其材质
-                                    *//*foreach (Vector3 position in reachablePositions)
-                                    {
-                                        if (gridGenerator.gridCells.ContainsKey(position))
-                                        {
-                                            gridGenerator.gridCells[position].transform.position += new Vector3(0, 1, 0);
-
-                                        }
-                                    }*//*
-                                    //originalMatrial = selectedObject.GetComponent<Material>();
-                                    originalMatrial = selectedObject.GetComponent<MeshRenderer>().material;
-                                    selectedObject.GetComponent<MeshRenderer>().material = highlightMaterial;
-                                }
-                                else  // 选中的不是新的player
-                                {
-                                    if (selectedObject != null)   // selectedObject 只可能是选中的角色
-                                    {
-
-                                        if (hit.transform.gameObject.layer == environmentLayerIndex)  
-                                        {
-                                            Debug.Log("new");
-                                            // 获取移动物体起始坐标
-                                            Vector3 startPosition = selectedObject.transform.position;
-                                            // 获取这个棋盘格的坐标
-                                            Vector3 targetPosition = hit.transform.position;
-                                            // 移动选择物体的坐标
-                                            //selectedObject.transform.position = targetPosition;
-                                            // 调用寻路算法
-                                            unitMovement.MoveTo(targetPosition);
-                                            //List<Vector3> path = aStarPathfinder.FindPath(startPosition, targetPosition);
-                                        *//*    if (path != null)
-                                            {
-                                                // StartCoroutine : 启动协程
-                                                StartCoroutine(MoveAlongPath(path));
-                                                //foreach (Vector3 node in path)
-                                                //{
-                                                    //Debug.Log(node);
-                                                    //selectedObject.transform.position = node;
-                                                //}
-                                                //selectedObject.transform.position = path[path.Count - 1];
-                                            }
-                                            else
-                                            {
-                                                selectedObject.GetComponent<MeshRenderer>().material = originalMatrial;
-                                                selectedObject = null;
-                                            }*//*
-
-                                        }
-                                    }
-
-                                }*/
             }
             // 鼠标左键没有被按下的情况
             else
@@ -269,37 +213,22 @@ public class MouseControl : MonoBehaviour
         selectedObject = null;
     }
 
-    // 移动协程, 所谓协程
-    /*IEnumerator MoveAlongPath(List<Vector3> path)
+    private bool IsPointerOverUIObject()
     {
-        // 确保路径不为空
-        if (path == null || path.Count == 0)
-        {
-            yield break; // 退出协程
-        }
+        // 1. 设置 PointerEventData
+        PointerEventData eventData = new PointerEventData(EventSystem.current);
+        eventData.position = Input.mousePosition;
+        // 2. 获取 Graphic Raycaster (你的 Canvas 上的组件)
+        // 假设你的所有 UI 都在一个名为 'MainCanvas' 的 Canvas 下
+        List<RaycastResult> results = new List<RaycastResult>();
+        GraphicRaycaster raycaster = GetComponentInParent<GraphicRaycaster>(); // 或者手动找到它
 
-        float moveSpeed = 5f; // 移动速度
+        if (raycaster == null) return false;
 
-        // 遍历路径中的每个节点
-        foreach (Vector3 targetNode in path)
-        {
-            // 持续移动，直到到达目标节点
-            while (selectedObject.transform.position != targetNode)
-            {
-                
-                // 朝着目标点移动
-                selectedObject.transform.position = Vector3.MoveTowards(
-                    selectedObject.transform.position,
-                    targetNode,
-                    moveSpeed * Time.deltaTime
-                );
+        // 3. 执行射线检测
+        raycaster.Raycast(eventData, results);
 
-                // 告诉unity， 下一次循环等到下一帧再运行
-                yield return null; // 等待下一帧
-            }
-        }
-        // === 移动完成！在这里取消选中状态 ===
-        selectedObject.GetComponent<MeshRenderer>().material = originalMatrial;
-        selectedObject = null;
-    }*/
+        // 如果 results 列表不为空，说明击中了 UI 元素
+        return results.Count > 0;
+    }
 }

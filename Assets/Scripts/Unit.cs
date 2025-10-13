@@ -6,6 +6,7 @@ using UnityEngine;
 public class Unit : MonoBehaviour
 {
     [Header("基础属性")]
+
     public GameObject healthBarPrefab;
     public Vector3 healthBarOffset = new Vector3(0, 1.8f, 0); // 调整 Y 值，让血条位于士兵头顶
     public float maxHealth = 100;
@@ -81,6 +82,25 @@ public class Unit : MonoBehaviour
         state = UnitState.Dead;
     }
 
+    public BattleController GetFlatmateBattleController()
+    {
+        // 1. 获取自身的父对象 (UnitParent)
+        BattleController battleController = GetComponent<BattleController>();
+/*        Debug.Log("获取父对象");
+        Debug.Log(transform);*/
+        if (battleController != null)
+        {
+            // 2. 在父对象的所有子对象中查找 BattleController 组件
+            // 注意：这种方法性能开销较大，且依赖于结构固定
+            // BattleController bc = parent.GetComponentInChildren<BattleController>();
+            return battleController;
+
+            // 更常见且更高效的是：让父对象自己挂载一个 Manager 脚本
+            // 如果 BattleController 挂载在 UnitParent 上：
+            // return parent.GetComponent<BattleController>();
+        }
+        return null;
+    }
 
 
 }
