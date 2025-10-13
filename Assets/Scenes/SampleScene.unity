@@ -807,6 +807,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8405161829358754747, guid: 68f455551d65b484a86a8d619d3825ff, type: 3}
   m_PrefabInstance: {fileID: 1460476815}
   m_PrefabAsset: {fileID: 0}
+--- !u!212 &175897273 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 8405161829358754749, guid: 68f455551d65b484a86a8d619d3825ff, type: 3}
+  m_PrefabInstance: {fileID: 1460476815}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &203228967
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3015,6 +3020,9 @@ Transform:
   - {fileID: 990098117}
   - {fileID: 1518586272}
   - {fileID: 1060220047}
+  - {fileID: 777607137}
+  - {fileID: 819394344}
+  - {fileID: 993516925}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &666688534
@@ -3494,13 +3502,13 @@ Transform:
   m_GameObject: {fileID: 777607135}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -39, y: 26.744396, z: 68.3}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: -3.9, y: 2.6744397, z: 6.8300004}
+  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1150097051}
   - {fileID: 1939553197}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 664554704}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &782213902
 PrefabInstance:
@@ -3604,7 +3612,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   SelectionIndicator: {fileID: 0}
-  selectImage: {fileID: 8405161829358754749, guid: 68f455551d65b484a86a8d619d3825ff, type: 3}
+  selectImage: {fileID: 175897273}
 --- !u!82 &800029009
 AudioSource:
   m_ObjectHideFlags: 0
@@ -3848,13 +3856,13 @@ Transform:
   m_GameObject: {fileID: 819394342}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 38.5, y: 26.744396, z: -69.25}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 3.8500001, y: 2.6744397, z: -6.925}
+  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 666688535}
   - {fileID: 206703730}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 664554704}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &826756286
 PrefabInstance:
@@ -5332,10 +5340,10 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 100, y: 1, z: 100}
+  m_LocalScale: {x: 10, y: 0.1, z: 10}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 664554704}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1025349613
 PrefabInstance:
@@ -6086,7 +6094,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   SelectionIndicator: {fileID: 0}
-  selectImage: {fileID: 8405161829358754749, guid: 68f455551d65b484a86a8d619d3825ff, type: 3}
+  selectImage: {fileID: 1541511069}
 --- !u!4 &1123870503 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400052, guid: f4209d51d1ad0434299f2d498ee076ba, type: 3}
@@ -7101,6 +7109,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5015851073235153941, guid: fd8212a6b4413da43bfbf816034a6a69, type: 3}
   m_PrefabInstance: {fileID: 328150457}
   m_PrefabAsset: {fileID: 0}
+--- !u!212 &1541511069 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 8405161829358754749, guid: 68f455551d65b484a86a8d619d3825ff, type: 3}
+  m_PrefabInstance: {fileID: 1668868832}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1585572804
 GameObject:
   m_ObjectHideFlags: 0
@@ -7112,8 +7125,8 @@ GameObject:
   - component: {fileID: 1585572805}
   - component: {fileID: 1585572808}
   - component: {fileID: 1585572807}
-  - component: {fileID: 1585572809}
   - component: {fileID: 1585572810}
+  - component: {fileID: 1585572811}
   m_Layer: 5
   m_Name: SkillCommandPanel
   m_TagString: Untagged
@@ -7178,21 +7191,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1585572804}
   m_CullTransparentMesh: 0
---- !u!114 &1585572809
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1585572804}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e404d45f998dc2541b97802cd5720b68, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  buttonText: {fileID: 0}
-  associatedUnit: {fileID: 0}
-  associatedBattleController: {fileID: 0}
 --- !u!114 &1585572810
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7219,6 +7217,20 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!114 &1585572811
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1585572804}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4a56de6217899a42a53e83cc108e546, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  unitButtonPrefab: {fileID: 2224455743041678362, guid: bec721382a57ed84a9df0cf2535a2796, type: 3}
+  layoutGroup: {fileID: 1585572810}
 --- !u!1001 &1590188978
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9124,7 +9136,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab139e8f171334645b78ea3b813f1534, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weaponSingleSource: {fileID: 0}
+  weaponSingleSource: {fileID: 1123870505}
 --- !u!1 &2111097405
 GameObject:
   m_ObjectHideFlags: 0
@@ -9156,7 +9168,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damageTextPrefab: {fileID: 8919613297048056866, guid: 60f23c8604dea824faa0af20342a5d6f, type: 3}
   timeWarpOverlayPanel: {fileID: 452049808}
-  skillPanelManager: {fileID: 0}
+  skillPanelManager: {fileID: 1585572811}
 --- !u!4 &2111097407
 Transform:
   m_ObjectHideFlags: 0
@@ -9487,22 +9499,19 @@ SceneRoots:
   - {fileID: 548671268}
   - {fileID: 963194228}
   - {fileID: 2111097407}
+  - {fileID: 1865738608}
   - {fileID: 441547027}
   - {fileID: 333139842}
   - {fileID: 705507995}
-  - {fileID: 429398037}
-  - {fileID: 1865738608}
-  - {fileID: 143859241}
   - {fileID: 1907188147}
   - {fileID: 1269125475}
-  - {fileID: 777607137}
-  - {fileID: 819394344}
+  - {fileID: 429398037}
+  - {fileID: 143859241}
   - {fileID: 664554704}
-  - {fileID: 993516925}
   - {fileID: 1512211735}
   - {fileID: 286139065}
+  - {fileID: 742209451}
   - {fileID: 94140847}
   - {fileID: 2112252063}
   - {fileID: 427503149}
-  - {fileID: 742209451}
   - {fileID: 101000870}
