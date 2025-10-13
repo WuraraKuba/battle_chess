@@ -25,7 +25,6 @@ public class FloatingTextIndicator : MonoBehaviour
     void Update()
     {
         // 3. 驱动动画：向上浮动
-        Debug.Log("来动画吧");
         transform.position += Vector3.up * Time.deltaTime * moveSpeed;
 
         // 强制面对摄像机
