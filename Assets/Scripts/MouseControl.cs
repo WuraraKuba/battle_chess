@@ -1,4 +1,4 @@
-using JetBrains.Annotations;
+ï»¿using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
@@ -8,19 +8,22 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
-// ÓÃÓÚÊó±êÏà¹ØµÄ²Ù×÷£¬°üÀ¨Ñ¡Ôñ£¬Ö®ÀàµÄ
+// ç”¨äºé¼ æ ‡ç›¸å…³çš„æ“ä½œï¼ŒåŒ…æ‹¬é€‰æ‹©ï¼Œä¹‹ç±»çš„
 public class MouseControl : MonoBehaviour
 {
-    public AStarPathfinder aStarPathfinder;
-    public Material highlightMaterial;  // ÍÏÈëÄã´´½¨µÄ¸ßÁÁ²ÄÖÊ
-    private GameObject selectedObject;  // ´æ´¢µ±Ç°Ñ¡ÖĞµÄÎïÌå
-    private Material originalMatrial;   // ´æ´¢Ô­Ê¼²ÄÖÊ
+    // UI
+    public Canvas mainCanvas;
 
-    private UnitController selectedUnit = null;  // µ±Ç°×·×Ùµ¥Î»
+    public AStarPathfinder aStarPathfinder;
+    public Material highlightMaterial;  // æ‹–å…¥ä½ åˆ›å»ºçš„é«˜äº®æè´¨
+    private GameObject selectedObject;  // å­˜å‚¨å½“å‰é€‰ä¸­çš„ç‰©ä½“
+    private Material originalMatrial;   // å­˜å‚¨åŸå§‹æè´¨
+
+    private UnitController selectedUnit = null;  // å½“å‰è¿½è¸ªå•ä½
     private int unitLayerIndex;
 
-    private GameObject currentHoverObject; // µ±Ç°Êó±êĞüÍ£µÄÎïÌå
-    private Vector3 originalPosition;      // ´æ´¢ĞüÍ£ÎïÌåµÄÔ­Ê¼Î»ÖÃ
+    private GameObject currentHoverObject; // å½“å‰é¼ æ ‡æ‚¬åœçš„ç‰©ä½“
+    private Vector3 originalPosition;      // å­˜å‚¨æ‚¬åœç‰©ä½“çš„åŸå§‹ä½ç½®
     private int environmentLayerIndex;
     private int RaycastIgnoreLayerMask;
 
@@ -42,52 +45,45 @@ public class MouseControl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // ¼ì²éÊÇ·ñÔÚUIÉÏ£¨Õë¶ÔÊó±ê£©
-
-        // if (EventSystem.current.IsPointerOverGameObject(-1))
-        int pointerId = Pointer.current != null ? Pointer.current.deviceId : -1;
-
-        bool isOverUI = EventSystem.current != null && EventSystem.current.IsPointerOverGameObject(pointerId);
-        if (IsPointerOverUIObject())
-        {
-            // Êó±êÔÚUIÉÏ£¬²»Ö´ĞĞÉäÏßÂß¼­
+        Vector2 mousePos = Mouse.current.position.ReadValue();  // è·å–åƒç´ åæ ‡
+        // å¦‚æœé¼ æ ‡æŒ‡å‘UIï¼Œåˆ™ç›´æ¥returnï¼Œä¸æ‰§è¡Œç‰©ç†å°„çº¿æ£€æµ‹
+        if (IsPointerOverUI(mousePos))
             return;
-        }
-        // ÎŞÂÛÊó±êµã»÷Óë·ñ£¬¶¼´´½¨Ò»¸ö´ÓÉãÓ°»úÎ»ÖÃÏòÊó±êÎ»ÖÃ·¢ÉäµÄÉäÏß
-        // Õâ¸öÊÇÓÃÓÚÎïÀíÊÀ½ç¼ì²âµÄ
+        // æ— è®ºé¼ æ ‡ç‚¹å‡»ä¸å¦ï¼Œéƒ½åˆ›å»ºä¸€ä¸ªä»æ‘„å½±æœºä½ç½®å‘é¼ æ ‡ä½ç½®å‘å°„çš„å°„çº¿
+        // è¿™ä¸ªæ˜¯ç”¨äºç‰©ç†ä¸–ç•Œæ£€æµ‹çš„
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        // ÓÃÓÚ´æ´¢ÉäÏß¼ì²âµÄ½á¹û
+        // ç”¨äºå­˜å‚¨å°„çº¿æ£€æµ‹çš„ç»“æœ
         RaycastHit hit;
-        // ¼ì²âÉäÏßÊÇ·ñ½Ó´¥µ½ÎïÌå
+        // æ£€æµ‹å°„çº¿æ˜¯å¦æ¥è§¦åˆ°ç‰©ä½“
         if (Physics.Raycast(ray, out hit, 1000f, RaycastIgnoreLayerMask))  //, 100f, ~0, QueryTriggerInteraction.Ignore
         {
-            // ¼ì²âÊó±ê×ó¼üÊÇ·ñ±»°´ÏÂ
+            // æ£€æµ‹é¼ æ ‡å·¦é”®æ˜¯å¦è¢«æŒ‰ä¸‹
             if (Input.GetMouseButtonDown(0))
             {
                 if (hit.transform.gameObject.layer == unitLayerIndex)
                 {
-                    // **Çé¿ö A: µã»÷ÁË½ÇÉ« (Ñ¡Ôñ)**
+                    // **æƒ…å†µ A: ç‚¹å‡»äº†è§’è‰² (é€‰æ‹©)**
                     SelectUnit(hit.transform.gameObject.GetComponent<UnitController>());
 
-                    // ¸ßÁÁ
+                    // é«˜äº®
 
                 }
                 else if (hit.transform.gameObject.layer == environmentLayerIndex)
                 {
-                    // **Çé¿ö B: µã»÷ÁË»·¾³/¸ñ×Ó (ÒÆ¶¯)**
+                    // **æƒ…å†µ B: ç‚¹å‡»äº†ç¯å¢ƒ/æ ¼å­ (ç§»åŠ¨)**
                     if (selectedUnit != null)
                     {
                         TryMoveSelectedUnit(hit.point);
                     }
-                    // ·ñÔò£ºÃ»ÓĞÑ¡ÖĞ½ÇÉ«£¬µã»÷¸ñ×ÓÎŞĞ§
+                    // å¦åˆ™ï¼šæ²¡æœ‰é€‰ä¸­è§’è‰²ï¼Œç‚¹å‡»æ ¼å­æ— æ•ˆ
                 }
             }
-            // Êó±ê×ó¼üÃ»ÓĞ±»°´ÏÂµÄÇé¿ö
+            // é¼ æ ‡å·¦é”®æ²¡æœ‰è¢«æŒ‰ä¸‹çš„æƒ…å†µ
             else
             {
-                if (hit.transform.gameObject) // ²»¹ÜÊ²Ã´£¬Ò»ÂÉÅĞ¶Ï,ÒòÎª²»Í¬tag»òÕßlayer²»Í¬·½Ê½
+                if (hit.transform.gameObject) // ä¸ç®¡ä»€ä¹ˆï¼Œä¸€å¾‹åˆ¤æ–­,å› ä¸ºä¸åŒtagæˆ–è€…layerä¸åŒæ–¹å¼
                 {
-                    // Èç¹ûµ±Ç°ĞüÍ£µÄÎïÌåµÄlayerÊôÓÚenvironment
+                    // å¦‚æœå½“å‰æ‚¬åœçš„ç‰©ä½“çš„layerå±äºenvironment
                     if (hit.transform.gameObject.layer == environmentLayerIndex)
                     {
                         if (currentHoverObject != hit.transform.gameObject)
@@ -100,9 +96,9 @@ public class MouseControl : MonoBehaviour
                             // currentHoverObject = hit.transform.gameObject;
                             //Debug.Log("grid_position"+originalPosition);
                             originalPosition = hit.point;
-                            // ¸ù¾İÕâ¸öoriginalPositionÈ¥»ñÈ¡ÆåÅÌ×ø±ê
+                            // æ ¹æ®è¿™ä¸ªoriginalPositionå»è·å–æ£‹ç›˜åæ ‡
                             Vector3 girdPos =  gridManager.WorldToGridCoordinates(originalPosition);
-                            // ÅĞ¶ÏÕâ¸ögridPosµÄÖĞĞÄµãÊÇ·ñÓĞĞ§
+                            // åˆ¤æ–­è¿™ä¸ªgridPosçš„ä¸­å¿ƒç‚¹æ˜¯å¦æœ‰æ•ˆ
                             if (gridManager.ValidGridCenter(girdPos))
                             {
                                 gridManager.GenerateGrid(girdPos);
@@ -118,7 +114,7 @@ public class MouseControl : MonoBehaviour
                 }
             }
         }
-        else  // Ã»ÓĞ¼ì²âµ½ÎïÌå
+        else  // æ²¡æœ‰æ£€æµ‹åˆ°ç‰©ä½“
         {
             if (currentHoverObject != null)
             {
@@ -131,104 +127,107 @@ public class MouseControl : MonoBehaviour
 
     void SelectUnit(UnitController unit)
     {
-        // Èç¹ûÒÑ¾­ÓĞÑ¡ÖĞµÄ½ÇÉ«£¬ÏÈÈ¡ÏûÑ¡Ôñ
+        // å¦‚æœå·²ç»æœ‰é€‰ä¸­çš„è§’è‰²ï¼Œå…ˆå–æ¶ˆé€‰æ‹©
         if (selectedUnit != null)
         {
             selectedUnit.Deselect();
         }
 
-        // ÉèÖÃĞÂµÄÑ¡ÖĞ½ÇÉ«
+        // è®¾ç½®æ–°çš„é€‰ä¸­è§’è‰²
         selectedUnit = unit;
         selectedUnit.Select();
-        // ¸ßÁÁ
+        // é«˜äº®
         selectedUnit.TurnOnSelector();
-        Debug.Log(selectedUnit.name + " ÒÑ±»Ñ¡ÖĞ¡£");
+        Debug.Log(selectedUnit.name + " å·²è¢«é€‰ä¸­ã€‚");
     }
 
     void TryMoveSelectedUnit(Vector3 hitPoint)
     {
         if (selectedUnit == null) return;
-        // 1. Õı³£µÄ NavMesh ÑéÖ¤Á÷³Ì
+        // 1. æ­£å¸¸çš„ NavMesh éªŒè¯æµç¨‹
         Vector3 gridInfo = gridManager.WorldToGridCoordinates(hitPoint);
 
-        // 2. ÑéÖ¤¸ñ×ÓÊÇ·ñ¿ÉĞĞ×ß
+        // 2. éªŒè¯æ ¼å­æ˜¯å¦å¯è¡Œèµ°
         if (gridManager.ValidGridCenter(gridInfo))
         {
-            // 3. ÒÆ¶¯½ÇÉ«
+            // 3. ç§»åŠ¨è§’è‰²
 
             selectedUnit.MoveTo(gridInfo);
 
-            // 4. (¿ÉÑ¡) ÒÆ¶¯ºóÈ¡ÏûÑ¡Ôñ£¬×¼±¸ÏÂÒ»´ÎÑ¡Ôñ
+            // 4. (å¯é€‰) ç§»åŠ¨åå–æ¶ˆé€‰æ‹©ï¼Œå‡†å¤‡ä¸‹ä¸€æ¬¡é€‰æ‹©
             // selectedUnit.Deselect();
             // selectedUnit = null; 
         }
     }
 
 
-    // ÒÆ¶¯Ğ­³Ì, ËùÎ½Ğ­³Ì
+    // ç§»åŠ¨åç¨‹, æ‰€è°“åç¨‹
     IEnumerator MoveAlongPath(List<Vector3> path)
     {
 
-        // È·±£Â·¾¶²»Îª¿Õ
+        // ç¡®ä¿è·¯å¾„ä¸ä¸ºç©º
         if (path == null || path.Count == 0)
         {
-            yield break; // ÍË³öĞ­³Ì
+            yield break; // é€€å‡ºåç¨‹
         }
 
-        float moveSpeed = 3f; // ÒÆ¶¯ËÙ¶È
-        // »ñÈ¡Animator×é¼ş
+        float moveSpeed = 3f; // ç§»åŠ¨é€Ÿåº¦
+        // è·å–Animatorç»„ä»¶
         Animator animator = selectedObject.GetComponent<Animator>();
-        // ÒÆ¶¯¿ªÊ¼
+        // ç§»åŠ¨å¼€å§‹
         if (animator != null)
         {
             animator.SetFloat("Speed", moveSpeed);
             animator.SetFloat("MotionSpeed", moveSpeed);
         }
-        // ±éÀúÂ·¾¶ÖĞµÄÃ¿¸ö½Úµã
+        // éå†è·¯å¾„ä¸­çš„æ¯ä¸ªèŠ‚ç‚¹
         foreach (Vector3 targetNode in path)
         {
-            // ÈÃ½ÇÉ«³¯ÏòÄ¿±êµã
+            // è®©è§’è‰²æœå‘ç›®æ ‡ç‚¹
             selectedObject.transform.LookAt(targetNode);
-            // ³ÖĞøÒÆ¶¯£¬Ö±µ½µ½´ïÄ¿±ê½Úµã
+            // æŒç»­ç§»åŠ¨ï¼Œç›´åˆ°åˆ°è¾¾ç›®æ ‡èŠ‚ç‚¹
             while (selectedObject.transform.position != targetNode)
             {
                 Vector3 oldPos = selectedObject.transform.position;
-                // ³¯×ÅÄ¿±êµãÒÆ¶¯
+                // æœç€ç›®æ ‡ç‚¹ç§»åŠ¨
                 selectedObject.transform.position = Vector3.MoveTowards(
                     oldPos,
                     targetNode,
                     moveSpeed * Time.deltaTime
                 );
-                // ¸æËßunity£¬ ÏÂÒ»´ÎÑ­»·µÈµ½ÏÂÒ»Ö¡ÔÙÔËĞĞ
-                yield return null; // µÈ´ıÏÂÒ»Ö¡
+                // å‘Šè¯‰unityï¼Œ ä¸‹ä¸€æ¬¡å¾ªç¯ç­‰åˆ°ä¸‹ä¸€å¸§å†è¿è¡Œ
+                yield return null; // ç­‰å¾…ä¸‹ä¸€å¸§
             }
         }
-        // === ÒÆ¶¯Íê³É£¡ÔÚÕâÀïÈ¡ÏûÑ¡ÖĞ×´Ì¬ ===
+        // === ç§»åŠ¨å®Œæˆï¼åœ¨è¿™é‡Œå–æ¶ˆé€‰ä¸­çŠ¶æ€ ===
         if (animator != null)
         {
             animator.SetFloat("Speed", 0f);
-            animator.SetFloat("MotionSpeed", 0f); // »Ö¸´µ½ Idle ×´Ì¬
+            animator.SetFloat("MotionSpeed", 0f); // æ¢å¤åˆ° Idle çŠ¶æ€
         }
         selectedObject.GetComponent<MeshRenderer>().material = originalMatrial;
         selectedObject = null;
     }
 
-    private bool IsPointerOverUIObject()
+    private bool IsPointerOverUI(Vector2 pointerPos)
     {
-        // 1. ÉèÖÃ PointerEventData
+        // æ²¡æœ‰EventSystemå°±ç›´æ¥è·³è¿‡
+        if (EventSystem.current == null)
+        {
+            return false;
+        }
+        // æ„é€ PointerEventData
         PointerEventData eventData = new PointerEventData(EventSystem.current);
-        eventData.position = Input.mousePosition;
-        // 2. »ñÈ¡ Graphic Raycaster (ÄãµÄ Canvas ÉÏµÄ×é¼ş)
-        // ¼ÙÉèÄãµÄËùÓĞ UI ¶¼ÔÚÒ»¸öÃûÎª 'MainCanvas' µÄ Canvas ÏÂ
+        eventData.position = pointerPos;
+
+        // æ”¶é›†æ‰€æœ‰UIå°„çº¿å‘½ä¸­ç»“æœ
         List<RaycastResult> results = new List<RaycastResult>();
-        GraphicRaycaster raycaster = GetComponentInParent<GraphicRaycaster>(); // »òÕßÊÖ¶¯ÕÒµ½Ëü
 
-        if (raycaster == null) return false;
-
-        // 3. Ö´ĞĞÉäÏß¼ì²â
-        raycaster.Raycast(eventData, results);
-
-        // Èç¹û results ÁĞ±í²»Îª¿Õ£¬ËµÃ÷»÷ÖĞÁË UI ÔªËØ
+        // æ”¯æŒå¤šä¸ªCanvasï¼šæ‰¾åˆ°åœºæ™¯ä¸­æ‰€æœ‰GraphicRaycasterå¹¶æ£€æµ‹
+        foreach (var raycaster in FindObjectsOfType<GraphicRaycaster>())
+            raycaster.Raycast(eventData, results);
+        // è‹¥æ£€æµ‹åˆ°ä»»ä½•UIå‘½ä¸­ï¼Œå°±è¿”å›true
         return results.Count > 0;
     }
+
 }
