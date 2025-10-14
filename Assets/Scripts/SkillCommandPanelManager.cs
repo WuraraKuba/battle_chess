@@ -11,8 +11,6 @@ public class SkillCommandPanelManager : MonoBehaviour
 
     private List<GameObject> activeButtons = new List<GameObject>();
 
-    // 【TODO】你需要一个方法来获取所有友方单位
-    // 假设你在 BattleController 中有一个静态列表 UnitController.PlayerUnits
 
     public void ShowUnitButtons(List<Unit> playerUnits)
     {
@@ -24,6 +22,7 @@ public class SkillCommandPanelManager : MonoBehaviour
         // 2. 为每个单位生成按钮
         foreach (Unit unit in playerUnits)
         {
+            
             GameObject newButtonObj = Instantiate(unitButtonPrefab, transform);
             activeButtons.Add(newButtonObj);
 
@@ -34,7 +33,7 @@ public class SkillCommandPanelManager : MonoBehaviour
                 unitButton.Initialize(unit);
             }
         }
-        // 激活面板 (如果面板本身被 UIController 隐藏了，这步可以省略)
+        // 激活面板
         gameObject.SetActive(true);
     }
 

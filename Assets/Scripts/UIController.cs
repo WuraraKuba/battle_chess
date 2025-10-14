@@ -74,6 +74,7 @@ public class UIController : MonoBehaviour
             }
             else
             {
+
                 skillPanelManager.ClearButtons();
             }
         }

@@ -23,6 +23,9 @@ public class Unit : MonoBehaviour
     public GameObject bulletPrefab;  // 子弹对象
     public Transform muzzlePoint;  // 子弹出发点
 
+    [Header("技能属性")]
+    public GameObject grenade;  // 手雷
+
     [Header("移动属性")]
     public int movementRange = 1;
 

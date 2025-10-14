@@ -1,3 +1,4 @@
+using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -10,17 +11,33 @@ public class UnitSkillButton : MonoBehaviour
 
     // 存储它代表的单位对象
     public Unit associatedUnit;
-    // 存储对象所进行的操作
-    public BattleController associatedBattleController;
+    // 处理直接按下的情况
+    // 针对需要扔手雷的情况，需要先按按钮，此时时间依旧减缓，但UI消失，使得能够选择投放位置
+    private void OnSkillButtonClicked()
+    {
+        if (associatedUnit == null) return;
+        if (UIController.Instance != null)
+        {
+            // 1. 关闭时间减缓 UI 
+            UIController.Instance.SetTimeWarpUIVisibility(false);
+        }
+        // 获得当前选择角色的位置
+        Vector3 startLoc = associatedUnit.transform.position;
+        GameObject SkillObject = associatedUnit.grenade.gameObject;
+        // 获取鼠标射线当前位置
+        Debug.Log("进入技能逻辑" + startLoc);
+        if (CommandController.Instance != null) 
+        {
+            CommandController.Instance.GetSkillLoc(startLoc, SkillObject);
+        }
 
+    }
 
     // 初始化按钮（由 SkillCommandPanelManager 调用）
     public void Initialize(Unit unitData)
     {
         BattleController battleController = unitData.GetFlatmateBattleController();
-        associatedBattleController = battleController;
         associatedUnit = unitData;
-
         buttonText.text = unitData.chessName;
 
 
@@ -30,22 +47,6 @@ public class UnitSkillButton : MonoBehaviour
             buttonComponent.interactable = true;
             buttonComponent.onClick.RemoveAllListeners();
             buttonComponent.onClick.AddListener(OnSkillButtonClicked);
-        }
-    }
-
-    private void OnSkillButtonClicked()
-    {
-        if (associatedBattleController != null)
-        {
-            Debug.Log($"指挥 {associatedBattleController.gameObject.name} 激活技能！");
-            // 调用 UnitController 的方法
-            associatedBattleController.ActivateSkill();
-
-            // 关闭子弹时间 (假设 TimeWarpCommandController 是单例)
-            // if (TimeWarpCommandController.Instance != null)
-            // {
-            //     TimeWarpCommandController.Instance.SetTimeWarpActive(false); 
-            // }
         }
     }
 

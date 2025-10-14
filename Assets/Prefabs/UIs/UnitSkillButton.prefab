@@ -146,7 +146,7 @@ GameObject:
   - component: {fileID: 8292576287211759414}
   - component: {fileID: 3037784521896588140}
   - component: {fileID: 6426057854644175254}
-  - component: {fileID: 5142166295294233822}
+  - component: {fileID: 838687225522574870}
   m_Layer: 5
   m_Name: UnitSkillButton
   m_TagString: Untagged
@@ -256,7 +256,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &5142166295294233822
+--- !u!114 &838687225522574870
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -265,8 +265,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 2224455743041678362}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e4a56de6217899a42a53e83cc108e546, type: 3}
+  m_Script: {fileID: 11500000, guid: e404d45f998dc2541b97802cd5720b68, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  unitButtonPrefab: {fileID: 2119762717978570788}
-  layoutGroup: {fileID: 0}
+  buttonText: {fileID: 7198363290720613103}
+  associatedUnit: {fileID: 0}
+  associatedBattleController: {fileID: 0}

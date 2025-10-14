@@ -11,6 +11,7 @@ using UnityEngine.UI;
 // 用于鼠标相关的操作，包括选择，之类的
 public class MouseControl : MonoBehaviour
 {
+    public static MouseControl Instance { get; private set; }
     // UI
     public Canvas mainCanvas;
 
@@ -30,8 +31,21 @@ public class MouseControl : MonoBehaviour
     public GridGenerator gridGenerator;
     public GridManager gridManager;
 
+    private Ray ray;   // 射线检测
+    private RaycastHit hit;    // 用于存储射线检测的结果
+    private Vector3 hitPosition;
     private void Awake()
     {
+        if (Instance == null)
+        {
+            Instance = this;
+            // 确保它不会被销毁
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
         RaycastIgnoreLayerMask = ~LayerMask.GetMask("trigger", "Ignore Raycast");
         environmentLayerIndex = LayerMask.NameToLayer("environment");
         unitLayerIndex = LayerMask.NameToLayer("unit");
@@ -51,9 +65,7 @@ public class MouseControl : MonoBehaviour
             return;
         // 无论鼠标点击与否，都创建一个从摄影机位置向鼠标位置发射的射线
         // 这个是用于物理世界检测的
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        // 用于存储射线检测的结果
-        RaycastHit hit;
+        ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         // 检测射线是否接触到物体
         if (Physics.Raycast(ray, out hit, 1000f, RaycastIgnoreLayerMask))  //, 100f, ~0, QueryTriggerInteraction.Ignore
         {
@@ -140,7 +152,6 @@ public class MouseControl : MonoBehaviour
         selectedUnit.TurnOnSelector();
         Debug.Log(selectedUnit.name + " 已被选中。");
     }
-
     void TryMoveSelectedUnit(Vector3 hitPoint)
     {
         if (selectedUnit == null) return;
@@ -228,6 +239,22 @@ public class MouseControl : MonoBehaviour
             raycaster.Raycast(eventData, results);
         // 若检测到任何UI命中，就返回true
         return results.Count > 0;
+    }
+
+    // 返回射线检测结果
+    public Vector3 ReturnRaycastHitLoc()
+    {
+        if (hit.transform != null)
+        {
+            // 射线击中了物体，安全地访问 position
+            hitPosition = hit.point;
+            return hitPosition;
+        }
+        else
+        {
+            // 射线未击中任何物体（hit.transform 为 null），返回 (0, 0, 0)
+            return Vector3.zero;
+        }
     }
 
 }
