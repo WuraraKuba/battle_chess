@@ -248,6 +248,7 @@ namespace MapTileGridCreator.Core
 		/// <returns>The index corresponding.</returns>
 		public Vector3Int GetIndexByPosition(ref Vector3 position)
 		{
+
 			Vector3 localPosition = position - Origin;
 			localPosition /= (_size_cell * _gap_ratio);
 			Vector3Int indexCanon = Vector3Int.RoundToInt(localPosition);
