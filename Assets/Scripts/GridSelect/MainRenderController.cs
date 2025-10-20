@@ -11,9 +11,12 @@ public class MainRenderController : MonoBehaviour
     // 用于地图单元的高亮预制件
     [SerializeField]
     private GameObject mapCellHighlightPrefab;
+    [SerializeField]
+    private GameObject mapCellKeepHighlightPrefab;
 
     // 当前处理的高亮单位
     private GameObject currentHighlightInstance;
+    private GameObject currentKeepHighlightInstance;
 
     private void Awake()
     {
@@ -40,6 +43,7 @@ public class MainRenderController : MonoBehaviour
         
     }
 
+    // 是用于正方格
     public void MapGridCellHighLight(Vector3 position, float cellSize)
     {
         // 清除旧的高亮
@@ -52,6 +56,32 @@ public class MainRenderController : MonoBehaviour
         float scaleSize = cellSize * 0.95f;
         currentHighlightInstance.transform.localScale = new Vector3(scaleSize, 0.01f, scaleSize);
     }
+    public void MapHexCellHighLight(Vector3 position, float cellSize)
+    {
+        // 清除旧的高亮
+        ClearHighlight();
+        // 实例化预制件
+        currentHighlightInstance = Instantiate(mapCellHighlightPrefab, transform);
+        // 设置高亮位置
+        currentHighlightInstance.transform.position = position;
+        // 设置高亮尺寸
+        float scaleSize = cellSize * 0.95f;
+        currentHighlightInstance.transform.localScale = new Vector3(scaleSize, 0.01f, scaleSize);
+    }
+
+    public void MapHexCellKeepHighLight(Vector3 position, float cellSize)
+    {
+        // 清除旧的高亮
+        ClearKeepHighlight();
+        // 实例化预制件
+        currentKeepHighlightInstance = Instantiate(mapCellKeepHighlightPrefab, transform);
+        // 设置高亮位置
+        currentKeepHighlightInstance.transform.position = position;
+        // 设置高亮尺寸
+        float scaleSize = cellSize * 0.95f;
+        currentKeepHighlightInstance.transform.localScale = new Vector3(scaleSize, 0.01f, scaleSize);
+    }
+
 
     public void ClearHighlight()
     {
@@ -59,6 +89,15 @@ public class MainRenderController : MonoBehaviour
         {
             Destroy(currentHighlightInstance);
             currentHighlightInstance = null;
+        }
+    }
+
+    public void ClearKeepHighlight()
+    {
+        if (currentKeepHighlightInstance != null)
+        {
+            Destroy(currentKeepHighlightInstance);
+            currentKeepHighlightInstance = null;
         }
     }
 }

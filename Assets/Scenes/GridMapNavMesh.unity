@@ -489,6 +489,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 7
       objectReference: {fileID: 0}
+    - target: {fileID: 3098575093728601206, guid: 320f38d418e1a81468ccc817c073b5e5, type: 3}
+      propertyPath: m_RenderingLayerMask
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3179198174918125447, guid: 320f38d418e1a81468ccc817c073b5e5, type: 3}
       propertyPath: _grid_index.x
       value: 1
@@ -1661,6 +1665,10 @@ PrefabInstance:
     - target: {fileID: 3098575093728601201, guid: 320f38d418e1a81468ccc817c073b5e5, type: 3}
       propertyPath: m_Layer
       value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 3098575093728601206, guid: 320f38d418e1a81468ccc817c073b5e5, type: 3}
+      propertyPath: m_RenderingLayerMask
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3179198174918125447, guid: 320f38d418e1a81468ccc817c073b5e5, type: 3}
       propertyPath: _grid_index.x

@@ -39,12 +39,12 @@ public class GridMouseController : MonoBehaviour
         // 检测射线是否接触到物体
         if (Physics.Raycast(ray, out hit, 1000f, RaycastIgnoreLayerMask))
         {
-            // Debug.Log(hit.point);
+            Debug.Log(hit.point);
             // 尝试根据这个坐标，获取方块
             if (GridMapController.Instance != null && MainRenderController.Instance != null)
             {
                 Vector3 position = GridMapController.Instance.GetCubeTopCenterPositionByClickPosition(hit.point);
-                float cellSize = GridMapController.Instance.GetMapCellSize();
+                float cellSize = GridMapController.Instance.GetCubeMapCellSize();
                 // 如果 position没变，就不要改了
                 if (position != lastCellPosition)
                 {

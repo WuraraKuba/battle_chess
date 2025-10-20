@@ -1,5 +1,6 @@
 using MapTileGridCreator.Core;
 using MapTileGridCreator.CubeImplementation;
+using MapTileGridCreator.HexagonalImplementation;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -20,6 +21,13 @@ public class GridMapController : MonoBehaviour
     private GameObject GridBaseMap;
 
     private CubeGrid cubeGrid;
+    private HexagonalGrid hexagonalGrid;
+
+    // 寻路部分
+    private IHexGridService gridService;
+    private HexAStarPathfinding hexAStarPathfinding;
+    private float[,] costMap;
+
     private void Awake()
     {
         if (Instance == null)
@@ -33,11 +41,16 @@ public class GridMapController : MonoBehaviour
             Destroy(gameObject);
         }
         cubeGrid = GridBaseMap.GetComponent<CubeGrid>();
+        hexagonalGrid = GridBaseMap.GetComponent<HexagonalGrid>();
+        gridService = new HexGridService(hexagonalGrid);
+        hexAStarPathfinding = new HexAStarPathfinding(gridService);
+        InitializeCostMap(20, 20);
+        
     }
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
@@ -49,9 +62,15 @@ public class GridMapController : MonoBehaviour
     /// 用于接收现实坐标，然后将其转成地图索引
     /// </summary>
     /// <param name="position"></param>
-    public void Position2Index(Vector3 position)
+    public void Position2CubeIndex(Vector3 position)
     {
         Vector3Int index = cubeGrid.GetIndexByPosition(ref position);
+    }
+    public Vector3Int Position2HexIndex(Vector3 position)
+    {
+        Vector3Int index = hexagonalGrid.GetIndexByPosition(ref position);
+        return index;
+
     }
     /// <summary>
     /// 根据鼠标点击的位置，获取这个位置对应的方块上平面中心位置
@@ -72,10 +91,90 @@ public class GridMapController : MonoBehaviour
         return topCenterPosition;
 
     }
-
-    public float GetMapCellSize()
+    /// <summary>
+    ///在格网地图进行寻路
+    ///这部分应该就是计算出路径，具体怎么走看Unit自己
+    ///感觉怎么走都可以看NevMesh自己
+    /// </summary>
+    /// <param name="start"></param>
+    /// <param name="end"></param>
+    public void CubeMapPathFinder(Vector3 start, Vector3 end)
+    {
+        // 首先，将这两个坐标都转成格网坐标吧
+        Vector3 startGrid = GetCubeTopCenterPositionByClickPosition(start);
+        Vector3 endGrid = GetCubeTopCenterPositionByClickPosition(end);
+    }
+    /// <summary>
+    /// 获取地图方块单位基本属性
+    /// </summary>
+    /// <returns></returns>
+    public float GetCubeMapCellSize()
     {
         return cubeGrid.SizeCell;
+    }
+
+    // 以下针对六边形战略地图
+    public float GetHexMapCellSize()
+    {
+        return hexagonalGrid.SizeCell;
+    }
+    public Vector3 GetHexTopCenterPositionByClickPosition(Vector3 position)
+    {
+        // 根据点击坐标获取对应方块的中心坐标
+        Vector3Int index = hexagonalGrid.GetIndexByPosition(ref position);
+        Vector3 hexPosition = hexagonalGrid.GetPositionCell(index);
+        // 获取方块尺寸
+        float size = hexagonalGrid.SizeCell;
+
+        // 根据方块尺寸与中心坐标获取上平面坐标
+        Vector3 offset = Vector3.up * (size / 2f);
+        Vector3 topCenterPosition = hexPosition + offset;
+
+        return topCenterPosition;
+
+    }
+
+    public void GetNeighbours(Vector3Int index)
+    {
+        List<(float costFactor, Vector3Int index)> neibors = gridService.GetHexNeighbours(index, costMap);
+    }
+
+    /// <summary>
+    /// A*寻路算法
+    /// </summary>
+    /// <param name="start"></param>
+    /// <param name="goal"></param>
+    /// <returns></returns>
+    public List<Vector3Int> FindPath(Vector3Int start, Vector3Int goal)
+    {
+        // 确保 costMap 在这里是可用的
+        if (costMap == null)
+        {
+            Debug.LogError("成本地图未初始化！");
+            return new List<Vector3Int>();
+        }
+
+        return hexAStarPathfinding.FindPath(start, goal, costMap);
+    }
+
+    /// <summary>
+    /// 成本地图初始化
+    /// </summary>
+    /// <param name="width"></param>
+    /// <param name="height"></param>
+    /// <returns></returns>
+    private void InitializeCostMap(int width, int height)
+    {
+        costMap = new float[height, width]; // 习惯上二维数组是 [行, 列]，对应 [Y, X] 或 [MapHeight, MapWidth]
+
+        // 遍历所有单元格，设置成本为 1.0
+        for (int y = 0; y < height; y++)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                costMap[y, x] = 1.0f;
+            }
+        }
     }
 
 }
