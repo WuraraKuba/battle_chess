@@ -145,16 +145,26 @@ public class GridMapController : MonoBehaviour
     /// <param name="start"></param>
     /// <param name="goal"></param>
     /// <returns></returns>
-    public List<Vector3Int> FindPath(Vector3Int start, Vector3Int goal)
+    public List<Vector3> FindPath(Vector3Int start, Vector3Int goal)
     {
         // 确保 costMap 在这里是可用的
         if (costMap == null)
         {
             Debug.LogError("成本地图未初始化！");
-            return new List<Vector3Int>();
+            return new List<Vector3>();
+        }
+        List<Vector3Int> pathIndexes = hexAStarPathfinding.FindPath(start, goal, costMap);
+        // 将索引转成坐标
+        List<Vector3> pathPositions = new List<Vector3>();
+        for (int i = 0; i < pathIndexes.Count; i++)
+        {
+            Vector3Int pathIndex = pathIndexes[i];
+            Vector3 position = hexagonalGrid.GetLocalPositionCell(ref pathIndex);
+            position.y += 1.5f;  // 暂时措施
+            pathPositions.Add(position);
         }
 
-        return hexAStarPathfinding.FindPath(start, goal, costMap);
+        return pathPositions;
     }
 
     /// <summary>
@@ -176,5 +186,7 @@ public class GridMapController : MonoBehaviour
             }
         }
     }
+
+
 
 }

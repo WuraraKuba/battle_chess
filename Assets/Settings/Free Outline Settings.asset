@@ -20,14 +20,14 @@ MonoBehaviour:
     m_Bits: 4294967295
   renderQueue: 2
   occlusion: 2
-  maskingStrategy: 0
+  maskingStrategy: 1
   color: {r: 1, g: 0.1006944, b: 0, a: 0.50980395}
   enableOcclusion: 0
   occludedColor: {r: 1, g: 0, b: 0, a: 1}
   blendMode: 0
   extrusionMethod: 6
   scaling: 0
-  width: 20
+  width: 8.2
   minWidth: 0
   scaleWithResolution: 0
   referenceResolution: 0

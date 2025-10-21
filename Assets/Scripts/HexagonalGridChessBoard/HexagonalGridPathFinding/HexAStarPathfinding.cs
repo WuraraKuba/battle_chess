@@ -87,7 +87,6 @@ public class HexAStarPathfinding
                 if (!allNodes.TryGetValue(neighbourIndex, out HexCellNode neighbourNode))
                 {
                     // 第一次发现该节点
-                    Debug.Log("是第一次加入吗");
                     neighbourNode = new HexCellNode(neighbourIndex);
                     allNodes[neighbourIndex] = neighbourNode;
 
@@ -96,7 +95,6 @@ public class HexAStarPathfinding
                 }
 
                 // 5. 更新优化：如果新路径更优 (GScore 更小)
-                Debug.Log("neighbourNode.GScore = " + neighbourNode.GScore);
                 if (newGScore < neighbourNode.GScore)
                 {
                     neighbourNode.Parent = currentNode; // 设置父节点 (记录路径)
