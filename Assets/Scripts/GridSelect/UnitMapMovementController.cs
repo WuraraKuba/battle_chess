@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class UnitMapMovementController : MonoBehaviour
 {
@@ -28,7 +29,10 @@ public class UnitMapMovementController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (SceneManager.GetActiveScene().name != "BoardScene")
+        {
+            return; // 如果不在地图场景，直接退出 Update
+        }
     }
     // 公共启动方法：方便外部调用
     public void StartMovement(GameObject selectedObject, List<Vector3> path)
@@ -52,7 +56,7 @@ public class UnitMapMovementController : MonoBehaviour
             yield break;
         }*/
 
-        float moveSpeed = 1f; // 移动速度
+        float moveSpeed = 2f; // 移动速度
         /*        // 获取Animator组件
                 Animator animator = selectedObject.GetComponent<Animator>();*/
         /*        // 移动开始
@@ -93,4 +97,6 @@ public class UnitMapMovementController : MonoBehaviour
         selectedObject.GetComponent<MeshRenderer>().material = originalMatrial;
         selectedObject = null;*/
     }
+
+
 }
