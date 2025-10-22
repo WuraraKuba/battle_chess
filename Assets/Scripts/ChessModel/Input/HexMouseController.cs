@@ -25,8 +25,8 @@ public class HexMouseController : MonoBehaviour
     // 部署与战略模式，简单版本
     private GameObject deployedUnit = null;  // 单位
     private float yOffset;
-    public enum GameMode { Deployment, Pathfinding }  // 模式
-    private GameMode currentMode = GameMode.Deployment; // 当前地图模式
+/*    public enum GameMode { Deployment, Pathfinding }  // 模式
+    private GameMode currentMode = GameMode.Deployment; // 当前地图模式*/
     [Header("Deploy Settings")]
     [SerializeField] private GameObject unitPrefab; // 要部署的单位 Prefab
     [SerializeField] private Button startButton;     // “游戏开始”按钮的引用
@@ -50,11 +50,11 @@ public class HexMouseController : MonoBehaviour
         RaycastIgnoreLayerMask = ~LayerMask.GetMask("trigger", "Ignore Raycast");
         yOffset = unitPrefab.GetComponent<CapsuleCollider>().height / 2;
 
-        // 将时间绑定到按钮
+/*        // 将时间绑定到按钮
         startButton.onClick.AddListener(OnStartGameClicked);
 
         // 确保一开始只有 startButton 是可见的，且处于 Deployment 模式
-        currentMode = GameMode.Deployment;
+        currentMode = GameMode.Deployment;*/
     }
     // Start is called before the first frame update
     void Start()
@@ -89,7 +89,7 @@ public class HexMouseController : MonoBehaviour
                     // 按钮事件本身会处理点击
                     return;
                 }
-                if (currentMode == GameMode.Deployment)
+                if (GameController.Instance.GetGameStatus() == GameStatus.BeforeGame)
                 {
                     // 当前属于部署模式下
                     // 只能部署一个单位
@@ -176,7 +176,7 @@ public class HexMouseController : MonoBehaviour
         }
     }
 
-    // “游戏开始”按钮的点击处理方法
+/*    // “游戏开始”按钮的点击处理方法
     private void OnStartGameClicked()
     {
         if (deployedUnit != null)
@@ -189,14 +189,19 @@ public class HexMouseController : MonoBehaviour
         {
             Debug.LogWarning("请先点击地图部署一个单位！");
         }
-    }
+    }*/
 
     private void DeployUnit(Vector3 deployPosition)
     {
-
+        GameObject enemyPoolParent = GameController.Instance.OurUnitsPool;
+        Transform transform = enemyPoolParent.transform;
         deployPosition.y += yOffset;
         // 2. 实例化单位
-        GameObject newUnit = Instantiate(unitPrefab, deployPosition, Quaternion.identity);
+        GameObject newUnit = Instantiate(
+                                        unitPrefab
+                                        , deployPosition
+                                        , Quaternion.identity
+                                        , transform);
 
         // 3. 存储引用
         deployedUnit = newUnit;
