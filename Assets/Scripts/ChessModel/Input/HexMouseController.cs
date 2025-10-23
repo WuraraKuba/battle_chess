@@ -22,8 +22,6 @@ public class HexMouseController : MonoBehaviour
     private Vector3? startPosition = null;
     private Vector3? endPosition = null;
 
-    // 部署与战略模式，简单版本
-    private GameObject deployedUnit = null;  // 单位
     private float yOffset;
 /*    public enum GameMode { Deployment, Pathfinding }  // 模式
     private GameMode currentMode = GameMode.Deployment; // 当前地图模式*/
@@ -92,16 +90,17 @@ public class HexMouseController : MonoBehaviour
                 if (GameController.Instance.GetGameStatus() == GameStatus.BeforeGame)
                 {
                     // 当前属于部署模式下
-                    // 只能部署一个单位
-                    if (deployedUnit == null)
+                    // 将打开棋子选择UI
+                    // 目前只能部署一个单位
+                    if (UnitCoreController.Instance.deployedUnit == null)
                     {
                         // 部署逻辑：直接在点击的格子上实例化 Prefab
-                        DeployUnit(mousePosition);
+                        UnitCoreController.Instance.DeployUnit(mousePosition);
                     }
                     else
                     {
                         // 已经在地图上，视为重新部署：先清除旧的，再生成新的
-                        RedeployUnit(mousePosition);
+                        UnitCoreController.Instance.RedeployUnit(mousePosition);
                     }
 
                 }
@@ -116,14 +115,13 @@ public class HexMouseController : MonoBehaviour
                         Vector3Int endIndex = GridMapController.Instance.Position2HexIndex(endPosition.Value);
                         List<Vector3> path = GridMapController.Instance.FindPath(startIndex, endIndex);
                         // 但在此之前，先把起始点的渲染做好
-                        UnitMapMovementController.Instance.StartMovement(deployedUnit, path);
+                        UnitMapMovementController.Instance.StartMovement(UnitCoreController.Instance.deployedUnit, path);
                         // 移动完成，看看是否触发战斗
-                        Vector3 SelectObjectPosion = deployedUnit.transform.position;
+                        Vector3 SelectObjectPosion = UnitCoreController.Instance.deployedUnit.transform.position;
                         SelectObjectPosion.y -= 1.5f;  // 暂时方案
                         Vector3Int objectIndex = GridMapController.Instance.Position2HexIndex(SelectObjectPosion);
                         Debug.Log("物体所在的索引" +  objectIndex);   
                         CheckForBattleTrigger(objectIndex);
-
 
                     }
                     else
@@ -174,47 +172,6 @@ public class HexMouseController : MonoBehaviour
                 }
             }
         }
-    }
-
-/*    // “游戏开始”按钮的点击处理方法
-    private void OnStartGameClicked()
-    {
-        if (deployedUnit != null)
-        {
-            currentMode = GameMode.Pathfinding;
-            startButton.gameObject.SetActive(false); // 隐藏按钮，锁定寻路模式
-            Debug.Log("部署完成，进入寻路模式。");
-        }
-        else
-        {
-            Debug.LogWarning("请先点击地图部署一个单位！");
-        }
-    }*/
-
-    private void DeployUnit(Vector3 deployPosition)
-    {
-        GameObject enemyPoolParent = GameController.Instance.OurUnitsPool;
-        Transform transform = enemyPoolParent.transform;
-        deployPosition.y += yOffset;
-        // 2. 实例化单位
-        GameObject newUnit = Instantiate(
-                                        unitPrefab
-                                        , deployPosition
-                                        , Quaternion.identity
-                                        , transform);
-
-        // 3. 存储引用
-        deployedUnit = newUnit;
-
-        Debug.Log($"单位已部署在 {deployPosition}。请点击 '游戏开始' 按钮切换模式。");
-    }
-
-    private void RedeployUnit(Vector3 deployNewPosition)
-    {
-        // 销毁旧单位
-        Destroy(deployedUnit);
-        // 部署新单位
-        DeployUnit(deployNewPosition);
     }
 
     /// <summary>

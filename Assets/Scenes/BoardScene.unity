@@ -1183,6 +1183,53 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 338578491910691739, guid: 5f01243cca992a5498c9e64a463afd8b, type: 3}
   m_PrefabInstance: {fileID: 386798619}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &387218452
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 387218454}
+  - component: {fileID: 387218453}
+  m_Layer: 0
+  m_Name: MapUIManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &387218453
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 387218452}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c52320999e337f44ba970a1c7d4ed6d3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  startButton: {fileID: 1781211388}
+  deployButton: {fileID: 0}
+--- !u!4 &387218454
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 387218452}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 271.13358, y: 115.7153, z: -253.46075}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1661617126}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &418512546 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 338578491910691739, guid: 5f01243cca992a5498c9e64a463afd8b, type: 3}
@@ -3002,7 +3049,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1054530281}
   m_Layer: 0
-  m_Name: OurUnitsPools
+  m_Name: OurUnitsPool
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3868,8 +3915,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1240184387}
+  - component: {fileID: 1240184388}
   m_Layer: 0
-  m_Name: UnitController
+  m_Name: UnitCoreManager
   m_TagString: Unit
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3892,6 +3940,23 @@ Transform:
   - {fileID: 1054530281}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1240184388
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1240184386}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3fd9eb0d7e534647afd579b42e104e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  EnemyUnitsPool: {fileID: 0}
+  OurUnitsPool: {fileID: 0}
+  unitPrefab: {fileID: 7028270251229995716, guid: 82bc1b2a50dd6154ea0bcd973b4ab1c2, type: 3}
+  deployedUnit: {fileID: 0}
+  unitConfigLabel: Chess
 --- !u!1001 &1294824636
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4860,6 +4925,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 108118868208601325, guid: edd5ef1a4310d7d43bce80143b534394, type: 3}
   m_PrefabInstance: {fileID: 1659025088}
   m_PrefabAsset: {fileID: 0}
+--- !u!224 &1661617126 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 7331159572590128323, guid: 79a75bc01b24bb744987fc125093ee8b, type: 3}
+  m_PrefabInstance: {fileID: 880574335832584567}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1664199721
 GameObject:
   m_ObjectHideFlags: 0
@@ -4871,7 +4941,7 @@ GameObject:
   - component: {fileID: 1664199723}
   - component: {fileID: 1664199722}
   m_Layer: 0
-  m_Name: GameController
+  m_Name: GameManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4889,8 +4959,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 673444c0fd398aa429a7208be89cbb6f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  EnemyUnitsPool: {fileID: 0}
-  OurUnitsPool: {fileID: 0}
   startButton: {fileID: 1781211388}
 --- !u!4 &1664199723
 Transform:
@@ -5933,7 +6001,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 0}
+    m_TransformParent: {fileID: 387218454}
     m_Modifications:
     - target: {fileID: 6078748481959700442, guid: 79a75bc01b24bb744987fc125093ee8b, type: 3}
       propertyPath: m_Name
@@ -6272,7 +6340,7 @@ SceneRoots:
   - {fileID: 3337888457771519714}
   - {fileID: 5925383403896226987}
   - {fileID: 2743864625558487323}
-  - {fileID: 880574335832584567}
   - {fileID: 3788677414552844263}
   - {fileID: 1664199723}
   - {fileID: 1240184387}
+  - {fileID: 387218454}

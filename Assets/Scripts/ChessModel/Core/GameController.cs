@@ -14,15 +14,8 @@ public class GameController : MonoBehaviour
 
     private GameStatus currentStatus;  // 当前游戏状态
 
-    // 当前游戏中的敌我数目
-    private int enemyNums;  // 敌人数目
-    private int OurNums;    // 我方数目
-    // 对象池，用于存储敌人与我方游戏对象的
-    [SerializeField] public GameObject EnemyUnitsPool;
-    [SerializeField] public GameObject OurUnitsPool;
 
     // 按钮监听
-    [SerializeField] private Button startButton;  // 开始按钮
     // [SerializeField] private Button nextTurnButton;   // 下一回合
 
 
@@ -53,26 +46,12 @@ public class GameController : MonoBehaviour
     public void GameStatusInitialized()
     {
         currentStatus = GameStatus.BeforeGame;
-        // 获取Hierarchy中的单位总对象
-        GameObject unitManagerObject = GameObject.FindGameObjectWithTag("Unit");
-        if (unitManagerObject != null) 
-        {
-            Debug.Log("游戏初始化");
-            Transform enemyUnitsPoolTransform = unitManagerObject.transform.Find("EnemyUnitsPool");
-            Transform ourUnitPoolTransform = unitManagerObject.transform.Find("OurUnitsPool");
-            if (enemyUnitsPoolTransform != null)
-            {
-                Debug.Log("敌人池初始化");
-                EnemyUnitsPool = enemyUnitsPoolTransform.gameObject;
-            }
-            if (ourUnitPoolTransform != null)
-            {
-                OurUnitsPool = ourUnitPoolTransform.gameObject;
-            }
-        }
-        
-        // 开始按钮监听
-        startButton.onClick.AddListener(OnStartButtonClick);
+        // UnitCoreController 初始化
+        UnitCoreController.Instance.UnitCoreControllerInitialized();
+        /*// 开始按钮监听
+        startButton.onClick.AddListener(OnStartButtonClick);*/
+        // UI初始化
+        MapUIController.Instance.MapUIInitialized();
 
     }
 
@@ -98,39 +77,6 @@ public class GameController : MonoBehaviour
         if (currentStatus == GameStatus.InGame)
         {
             currentStatus = GameStatus.Failure;
-        }
-    }
-
-    public void GetEnemiesNums()
-    {
-        if (EnemyUnitsPool != null)
-        {
-            enemyNums = EnemyUnitsPool.transform.childCount;
-        }
-    }
-
-    private void GetOurNums()
-    {
-        if (OurUnitsPool != null)
-        {
-            OurNums = OurUnitsPool.transform.childCount;
-        }
-        
-    }
-
-    private void OnStartButtonClick()
-    {
-        GetOurNums();
-        GetEnemiesNums();
-        if (OurNums > 0)
-        {
-            startButton.gameObject.SetActive(false);
-            // 游戏状态切换
-            StatusChangeToInGameFromBeforeGame();
-        }
-        else
-        {
-            Debug.Log("需要部署单位");
         }
     }
 
