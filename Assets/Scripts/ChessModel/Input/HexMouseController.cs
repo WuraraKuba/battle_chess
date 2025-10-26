@@ -71,7 +71,10 @@ public class HexMouseController : MonoBehaviour
         // 检测射线是否接触到物体
         if (Physics.Raycast(ray, out hit, 1000f, RaycastIgnoreLayerMask))
         {
-            // Debug.Log(hit.point);
+            if (IsPointerOverUIObject())
+            {// 检测是否在UI上
+                return;
+            }
             // 尝试根据这个坐标，获取方块
             if (GridMapController.Instance != null)
             {
@@ -81,18 +84,16 @@ public class HexMouseController : MonoBehaviour
             // 鼠标左键点击逻辑：意味开始输入起始点
             if (Input.GetMouseButtonDown(0))
             {
-                if (IsPointerOverUIObject())
-                {
-                    // 如果点击了 UI 元素 (比如按钮)，则立即退出，不进行后续的 3D 射线检测
-                    // 按钮事件本身会处理点击
-                    return;
-                }
+
                 if (GameController.Instance.GetGameStatus() == GameStatus.BeforeGame)
                 {
                     // 当前属于部署模式下
+                    // 获取UnitDatas
+                    List<UnitData> unitData = UnitCoreController.Instance.getOurTeam();
                     // 将打开棋子选择UI
+                    MapUIController.Instance.PopulateUnitSelectionUI(mousePosition, unitData);
                     // 目前只能部署一个单位
-                    if (UnitCoreController.Instance.deployedUnit == null)
+                    /*if (UnitCoreController.Instance.deployedUnit == null)
                     {
                         // 部署逻辑：直接在点击的格子上实例化 Prefab
                         UnitCoreController.Instance.DeployUnit(mousePosition);
@@ -101,7 +102,7 @@ public class HexMouseController : MonoBehaviour
                     {
                         // 已经在地图上，视为重新部署：先清除旧的，再生成新的
                         UnitCoreController.Instance.RedeployUnit(mousePosition);
-                    }
+                    }*/
 
                 }
                 else

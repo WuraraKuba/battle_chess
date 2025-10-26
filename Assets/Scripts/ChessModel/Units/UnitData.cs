@@ -10,11 +10,13 @@ using UnityEngine;
 public class UnitData : ScriptableObject
 {
     [SerializeField]
-    private GameObject gameObject;  // 棋子的Prefab
+    public GameObject gameObject;  // 棋子的Prefab
 
 /*    [SerializeField]
     private Sprite Icon;   // 在UI上显示的图片*/
 
     public string UnitName = "UnitTest";
+
+    public Vector3 UnitLocation = Vector3.zero;
 
 }

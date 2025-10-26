@@ -11,7 +11,14 @@ public class MapUIController : MonoBehaviour
     [SerializeField] private Button startButton;  // 开始按钮
     [Header("Deploy Button")]
     [SerializeField] private Button deployButton;
+    private List<GameObject> activeButtons = new List<GameObject>();
+    public GameObject unitButtonPrefab;
     public Action OnDeployStartClicked;
+    public GameObject deployOverlayPanel;
+    // 监听各种按钮事件
+
+    // 各种业务类吧
+    UnitDeployUI unitDeployUI; 
 
     private void Awake()
     {
@@ -25,9 +32,9 @@ public class MapUIController : MonoBehaviour
             Destroy(gameObject);
         }
         // 部署确认按钮
-        deployButton.onClick.AddListener(OnDeployClicked);
+/*        deployButton.onClick.AddListener(OnDeployClicked);
 
-        deployButton.interactable = true;
+        deployButton.interactable = true;*/
     }
     /// <summary>
     /// 地图UI初始化
@@ -36,7 +43,13 @@ public class MapUIController : MonoBehaviour
     {
         // 开始按钮监听
         startButton.onClick.AddListener(OnStartButtonClick);
+        deployOverlayPanel.SetActive(false);
+        unitDeployUI = deployOverlayPanel.GetComponent<UnitDeployUI>();
+        // 部署按钮监听
+        GlobalEvents.OnAnyUnitDeployed += HandleDeploymentComplete;
+
     }
+
     private void OnDeployClicked()
     {
         // 1. 通知主控脚本：我们准备部署了
@@ -50,8 +63,20 @@ public class MapUIController : MonoBehaviour
     }
 
     // 选择部署界面
-    public void PopulateUnitSelection(List<string> nameList)
+    public void PopulateUnitSelectionUI(Vector3 mouseLoc, List<UnitData> unitDatas)
     {
+        deployOverlayPanel.SetActive(true);
+        startButton.gameObject.SetActive(false);
+
+        unitDeployUI.DeployButtons(unitDatas, mouseLoc, ref activeButtons);
+
+    }
+    private void HandleDeploymentComplete()
+    {
+        // MapUIController 的职责：关闭 UI
+        deployOverlayPanel.SetActive(false);
+        startButton.gameObject.SetActive(true);
+        Debug.Log("MapUIController 收到部署完成信号，执行隐藏操作。");
 
     }
 
@@ -70,4 +95,6 @@ public class MapUIController : MonoBehaviour
             Debug.Log("需要部署单位");
         }
     }
+
+   
 }

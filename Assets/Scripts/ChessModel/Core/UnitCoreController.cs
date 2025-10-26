@@ -131,21 +131,23 @@ public class UnitCoreController : MonoBehaviour
     /// 向UI发送
     /// </summary>
     /// <returns></returns>
-    public List<string> getOurTeamNames()
+    public List<UnitData> getOurTeam()
     {
-        List<string> teamNames = new List<string>();
+        List<UnitData> teams = new List<UnitData>();
         foreach (UnitData unitData in allUnitConfigurations)
         {
-            teamNames.Add(unitData.name);
+            teams.Add(unitData);
         }
-        return teamNames;
+        return teams;
     }
     // 友方部署
-    public void DeployUnit(Vector3 deployPosition)
+    public void DeployUnit(GameObject unitPrefab, Vector3 deployPosition)
     {
         GameObject enemyPoolParent = OurUnitsPool;
         Transform transform = enemyPoolParent.transform;
-        deployPosition.y += 1.5f;
+        CapsuleCollider collider = unitPrefab.GetComponent<CapsuleCollider>();
+        float height = collider.height / 2;
+        deployPosition.y += height;
         // 2. 实例化单位
         GameObject newUnit = Instantiate(
                                         unitPrefab
@@ -167,7 +169,7 @@ public class UnitCoreController : MonoBehaviour
         // 销毁旧单位
         Destroy(deployedUnit);
         // 部署新单位
-        DeployUnit(deployNewPosition);
+        DeployUnit(unitPrefab, deployNewPosition);
     }
     // 敌人生成
 
