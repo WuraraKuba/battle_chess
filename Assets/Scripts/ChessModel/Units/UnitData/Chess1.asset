@@ -14,3 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameObject: {fileID: 7028270251229995716, guid: 82bc1b2a50dd6154ea0bcd973b4ab1c2, type: 3}
   UnitName: UnitTest1
+  UnitLocation: {x: 0.8660254, y: 0.5, z: 4.5}
+  isEnemy: 0

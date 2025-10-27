@@ -21,13 +21,11 @@ public class UnitCoreController : MonoBehaviour
     private int OurNums;    // 我方数目
 
     [Header("Deploy Settings")]
-    [SerializeField] private GameObject unitPrefab; // 要部署的单位 Prefab,目前的情况是只能部署一个，以及一种
-    public GameObject deployedUnit = null;
     // 存储加载完成的所有 UnitData
     private List<UnitData> allUnitConfigurations = new List<UnitData>();
     [SerializeField]
-    private string unitConfigLabel = "Chess1";
-
+    private string meUnitConfigLabel = "Chess";
+    private string enemyConfigLabel = "enemyChess";
 
     private void Awake()
     {
@@ -36,27 +34,16 @@ public class UnitCoreController : MonoBehaviour
             Instance = this;
             DontDestroyOnLoad(gameObject);
             // 加载单位数据
-            LoadAllUnitData();
+            LoadAllUnitData(meUnitConfigLabel);
+            LoadAllUnitData(enemyConfigLabel);
         }
         else
         {
             Destroy(gameObject);
         }
 
-        
-
-    }
-    // Start is called before the first frame update
-    void Start()
-    {
-        
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
     // 加载单位资产
     // 初始化
     public void UnitCoreControllerInitialized()
@@ -81,12 +68,12 @@ public class UnitCoreController : MonoBehaviour
         }
     }
     // 加载单位资产
-    public void LoadAllUnitData()
+    public void LoadAllUnitData(string label)
     {
         // Addressables.LoadAssetsAsync 方法返回一个异步操作句柄 (AsyncOperationHandle)
         // 它会加载所有匹配标签的 T 类型资产
         AsyncOperationHandle<IList<UnitData>> loadHandle = Addressables.LoadAssetsAsync<UnitData>(
-            unitConfigLabel,
+            label,
             (unitData) =>
             {
                 // 可选：加载过程中每加载完一个资产的回调 (例如更新加载条)
@@ -112,12 +99,6 @@ public class UnitCoreController : MonoBehaviour
             {
                 teamNames.Add(unitData.name);
             }
-            // 把NameList给UI，让其自己去动态生成按钮吧
-            // ❗ 可以在这里触发一个事件，通知 UI 系统 "单位数据已准备就绪"
-            // 例如: CustomActions.OnUnitDataLoaded?.Invoke(allUnitConfigurations);
-
-            // 示例：将加载到的数据交给 UIManager 动态生成按钮
-            // UIManager.Instance.PopulateUnitSelection(allUnitConfigurations);
         }
         else
         {
@@ -140,13 +121,17 @@ public class UnitCoreController : MonoBehaviour
         }
         return teams;
     }
-    // 友方部署
-    public void DeployUnit(GameObject unitPrefab, Vector3 deployPosition)
+    // 单位部署
+    public void DeployUnit(UnitData unitData)
     {
-        GameObject enemyPoolParent = OurUnitsPool;
-        Transform transform = enemyPoolParent.transform;
+        GameObject poolParent;
+        if (!unitData.isEnemy) poolParent = OurUnitsPool;
+        else poolParent = EnemyUnitsPool;
+        Transform transform = poolParent.transform;
+        GameObject unitPrefab = unitData.gameObject;
         CapsuleCollider collider = unitPrefab.GetComponent<CapsuleCollider>();
         float height = collider.height / 2;
+        Vector3 deployPosition = unitData.UnitLocation;
         deployPosition.y += height;
         // 2. 实例化单位
         GameObject newUnit = Instantiate(
@@ -156,21 +141,18 @@ public class UnitCoreController : MonoBehaviour
                                         , transform);
 
         // 3. 存储引用
-        // 目前以及被部署的单位，虽然通过设置子对象可以方便查询友方数
-        // 但是现在的新问题是如果要部署多个单位该如何是好。
-        deployedUnit = newUnit;
-
-        Debug.Log($"单位已部署在 {deployPosition}。请点击 '游戏开始' 按钮切换模式。");
+        UnitComponent unitComponent = newUnit.GetComponent<UnitComponent>();
+        unitComponent.Initialize(unitData);
     }
 
-    // 友方重新部署
+/*    // 友方重新部署
     public void RedeployUnit(Vector3 deployNewPosition)
     {
         // 销毁旧单位
         Destroy(deployedUnit);
         // 部署新单位
         DeployUnit(unitPrefab, deployNewPosition);
-    }
+    }*/
     // 敌人生成
 
     // 获取敌我数目

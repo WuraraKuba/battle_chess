@@ -13,7 +13,6 @@ public class UnitDeployUI : MonoBehaviour
     public void DeployButtons(List<UnitData> unitDatas, Vector3 DeployLoc, ref List<GameObject> activeButtons)
     {
         ClearDeployButtons(ref activeButtons);
-        Debug.Log("£¿£¿£¿£¿" + unitDatas.Count);
         if (unitDatas == null || unitDatas.Count == 0) return;
         else
         {

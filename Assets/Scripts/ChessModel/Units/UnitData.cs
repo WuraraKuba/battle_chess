@@ -19,4 +19,6 @@ public class UnitData : ScriptableObject
 
     public Vector3 UnitLocation = Vector3.zero;
 
+    public bool isEnemy;
+
 }

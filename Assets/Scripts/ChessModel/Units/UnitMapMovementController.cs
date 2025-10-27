@@ -43,7 +43,8 @@ public class UnitMapMovementController : MonoBehaviour
 
     public IEnumerator MoveAlongPath(GameObject selectedObject, List<Vector3> path)
     {
-
+        CapsuleCollider collider = selectedObject.GetComponent<CapsuleCollider>();
+        float yOffset = collider.height / 2;
         // 确保路径不为空
         if (path == null || path.Count == 0)
         {
@@ -74,16 +75,17 @@ public class UnitMapMovementController : MonoBehaviour
             // 持续移动，直到到达目标节点
             while (Vector3.Distance(selectedObject.transform.position, targetNode) > 0.01f)
             {
-                //Debug.Log("移动啊，你他妈的");
                 Vector3 oldPos = selectedObject.transform.position;
-                //Debug.Log("旧地点" + oldPos);
-                //Debug.Log("新地点" +  targetNode);
                 // 朝着目标点移动
                 selectedObject.transform.position = Vector3.MoveTowards(
                     oldPos,
                     targetNode,
                     moveSpeed * Time.deltaTime
                 );
+                UnitComponent unitComponent = selectedObject.GetComponent<UnitComponent>();
+                Vector3 currenLocation = targetNode;
+                currenLocation.y -= yOffset;
+                unitComponent.ChangeLocation(currenLocation);
                 // 告诉unity， 下一次循环等到下一帧再运行
                 yield return null; // 等待下一帧
             }

@@ -18,6 +18,7 @@ public class HexMouseController : MonoBehaviour
 
     private Vector3 lastCellPosition = Vector3.zero;  // 用于存储上次选择的单位坐标
 
+    public GameObject selectedUnit = null;
     // 加个？就能让这个数据结构能被赋值为null了
     private Vector3? startPosition = null;
     private Vector3? endPosition = null;
@@ -25,9 +26,7 @@ public class HexMouseController : MonoBehaviour
     private float yOffset;
 /*    public enum GameMode { Deployment, Pathfinding }  // 模式
     private GameMode currentMode = GameMode.Deployment; // 当前地图模式*/
-    [Header("Deploy Settings")]
-    [SerializeField] private GameObject unitPrefab; // 要部署的单位 Prefab
-    [SerializeField] private Button startButton;     // “游戏开始”按钮的引用
+
 
     // 简单版本的场景切换， 以索引1，0，5的cell作为战斗触发位置
     // 练习场景切换
@@ -46,7 +45,6 @@ public class HexMouseController : MonoBehaviour
             Destroy(gameObject);
         }
         RaycastIgnoreLayerMask = ~LayerMask.GetMask("trigger", "Ignore Raycast");
-        yOffset = unitPrefab.GetComponent<CapsuleCollider>().height / 2;
 
 /*        // 将时间绑定到按钮
         startButton.onClick.AddListener(OnStartGameClicked);
@@ -67,10 +65,15 @@ public class HexMouseController : MonoBehaviour
         {
             return; // 如果不在地图场景，直接退出 Update
         }
+        if (GameController.Instance.GetGameStatus() == GameStatus.InGameEnemy)
+        {  // 只在自己的回合内能操作
+            return;
+        }
         ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         // 检测射线是否接触到物体
         if (Physics.Raycast(ray, out hit, 1000f, RaycastIgnoreLayerMask))
         {
+            GameObject hitObject = hit.transform.gameObject;
             if (IsPointerOverUIObject())
             {// 检测是否在UI上
                 return;
@@ -92,46 +95,39 @@ public class HexMouseController : MonoBehaviour
                     List<UnitData> unitData = UnitCoreController.Instance.getOurTeam();
                     // 将打开棋子选择UI
                     MapUIController.Instance.PopulateUnitSelectionUI(mousePosition, unitData);
-                    // 目前只能部署一个单位
-                    /*if (UnitCoreController.Instance.deployedUnit == null)
-                    {
-                        // 部署逻辑：直接在点击的格子上实例化 Prefab
-                        UnitCoreController.Instance.DeployUnit(mousePosition);
-                    }
-                    else
-                    {
-                        // 已经在地图上，视为重新部署：先清除旧的，再生成新的
-                        UnitCoreController.Instance.RedeployUnit(mousePosition);
-                    }*/
-
                 }
                 else
                 {
                     if (startPosition != null)
                     {
                         // 此时这个位置将是终点
+
                         endPosition = mousePosition;
                         // 根据起点与终点，算出路径吧
                         Vector3Int startIndex = GridMapController.Instance.Position2HexIndex(startPosition.Value);
                         Vector3Int endIndex = GridMapController.Instance.Position2HexIndex(endPosition.Value);
+                        startPosition = null;
+                        endPosition = null;
                         List<Vector3> path = GridMapController.Instance.FindPath(startIndex, endIndex);
                         // 但在此之前，先把起始点的渲染做好
-                        UnitMapMovementController.Instance.StartMovement(UnitCoreController.Instance.deployedUnit, path);
-                        // 移动完成，看看是否触发战斗
+                        UnitMapMovementController.Instance.StartMovement(selectedUnit, path);
+/*                        // 移动完成，调整Unit位置
                         Vector3 SelectObjectPosion = UnitCoreController.Instance.deployedUnit.transform.position;
                         SelectObjectPosion.y -= 1.5f;  // 暂时方案
                         Vector3Int objectIndex = GridMapController.Instance.Position2HexIndex(SelectObjectPosion);
                         Debug.Log("物体所在的索引" +  objectIndex);   
-                        CheckForBattleTrigger(objectIndex);
+                        CheckForBattleTrigger(objectIndex);*/
 
                     }
                     else
                     {
-                        mousePosition.y -= yOffset;
-                        startPosition = mousePosition;
-                        Vector3Int startIndex = GridMapController.Instance.Position2HexIndex(startPosition.Value);
-                        Debug.Log("当前对应的格子" + startIndex);
-
+                        if (hitObject.layer == 8) // 如果选择的是单位才处理
+                        {
+                            selectedUnit = hitObject;
+                            UnitComponent unitComponent = hitObject.GetComponent<UnitComponent>();
+                            startPosition = unitComponent.GetLocation();
+                        }
+                    
                     }
                 }
                 
@@ -144,16 +140,22 @@ public class HexMouseController : MonoBehaviour
                 MainRenderController.Instance.ClearKeepHighlight();
                 MainRenderController.Instance.ClearHighlight();
             }
-            // 高亮部分
+            // 高亮部分,针对地块
             if(MainRenderController.Instance != null)
             {
                 float cellSize = GridMapController.Instance.GetHexMapCellSize();
-                // 如果 position没变，就不要改了
-                if (mousePosition != lastCellPosition)
+                if (hitObject.layer == 7)
                 {
+                    // 不点击时
+                    // 如果 position没变，就不要改了
+                    if (mousePosition != lastCellPosition)
+                    {
                         MainRenderController.Instance.MapHexCellHighLight(mousePosition, cellSize);
                         lastCellPosition = mousePosition;
+                    }
+
                 }
+                
                
                 if (startPosition != null)  // 点击高亮逻辑
                 {

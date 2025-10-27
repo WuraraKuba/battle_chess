@@ -59,7 +59,7 @@ public class GameController : MonoBehaviour
     {
         if (currentStatus == GameStatus.BeforeGame)
         {
-            currentStatus = GameStatus.InGame;
+            currentStatus = GameStatus.InGameMe;
         }
         // 监听下一回合按钮
         // nextTurnButton.onClick.AddListener(OnNextTurnButtonClick);
@@ -67,19 +67,26 @@ public class GameController : MonoBehaviour
 
     public void StatusChangeToVictoryFromInGame()
     {
-        if (currentStatus == GameStatus.InGame)
+        if (currentStatus == GameStatus.InGameMe)
         {
             currentStatus = GameStatus.Victory;
         }
     }
     public void StatusChangeToFailureFromInGame()
     {
-        if (currentStatus == GameStatus.InGame)
+        if (currentStatus == GameStatus.InGameMe)
         {
             currentStatus = GameStatus.Failure;
         }
     }
 
+    public void StatusChangeToNextTurnFromMe()
+    {
+        if (currentStatus == GameStatus.InGameMe)
+        {
+            currentStatus = GameStatus.InGameEnemy;
+        }
+    }
 /*    private void OnNextTurnButtonClick()
     {
         

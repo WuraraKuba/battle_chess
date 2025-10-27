@@ -30,7 +30,7 @@ public class UnitDeployButton : MonoBehaviour
         if (associateUnitData == null) return;
         if (UnitCoreController.Instance != null)
         {
-            UnitCoreController.Instance.DeployUnit(associateUnitData.gameObject, associateUnitData.UnitLocation);
+            UnitCoreController.Instance.DeployUnit(associateUnitData);
         }
         // 通报该事件完成
         GlobalEvents.ReportUnitDeployedFinshed();

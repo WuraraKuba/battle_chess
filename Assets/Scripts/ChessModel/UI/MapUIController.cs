@@ -9,8 +9,8 @@ public class MapUIController : MonoBehaviour
     public static MapUIController Instance {  get; private set; }
     [Header("Start Button")]
     [SerializeField] private Button startButton;  // 开始按钮
-    [Header("Deploy Button")]
-    [SerializeField] private Button deployButton;
+    [Header("Turn Button")]
+    [SerializeField] private Button nextTurnButton;
     private List<GameObject> activeButtons = new List<GameObject>();
     public GameObject unitButtonPrefab;
     public Action OnDeployStartClicked;
@@ -47,6 +47,9 @@ public class MapUIController : MonoBehaviour
         unitDeployUI = deployOverlayPanel.GetComponent<UnitDeployUI>();
         // 部署按钮监听
         GlobalEvents.OnAnyUnitDeployed += HandleDeploymentComplete;
+        // 下一回合事件监听
+        nextTurnButton.onClick.AddListener(OnNextTurnButtonClick);
+        nextTurnButton.gameObject.SetActive(false);
 
     }
 
@@ -89,11 +92,20 @@ public class MapUIController : MonoBehaviour
             startButton.gameObject.SetActive(false);
             // 游戏状态切换
             GameController.Instance.StatusChangeToInGameFromBeforeGame();
+            nextTurnButton.gameObject.SetActive(true);
         }
         else
         {
             Debug.Log("需要部署单位");
         }
+    }
+
+    private void OnNextTurnButtonClick()
+    {
+        nextTurnButton.gameObject.SetActive(false);
+        GameController.Instance.StatusChangeToNextTurnFromMe();
+        // 敌人行为逻辑
+
     }
 
    
