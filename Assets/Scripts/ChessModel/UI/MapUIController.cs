@@ -70,7 +70,7 @@ public class MapUIController : MonoBehaviour
     {
         deployOverlayPanel.SetActive(true);
         startButton.gameObject.SetActive(false);
-
+        Debug.Log("Wodaoyaokank" + unitDatas);
         unitDeployUI.DeployButtons(unitDatas, mouseLoc, ref activeButtons);
 
     }

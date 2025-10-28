@@ -87,12 +87,13 @@ public class HexMouseController : MonoBehaviour
             // 鼠标左键点击逻辑：意味开始输入起始点
             if (Input.GetMouseButtonDown(0))
             {
-
+                Debug.Log(GameController.Instance.GetGameStatus());
                 if (GameController.Instance.GetGameStatus() == GameStatus.BeforeGame)
                 {
                     // 当前属于部署模式下
                     // 获取UnitDatas
                     List<UnitData> unitData = UnitCoreController.Instance.getOurTeam();
+                    Debug.Log("MD_TEAM"+unitData.Count);
                     // 将打开棋子选择UI
                     MapUIController.Instance.PopulateUnitSelectionUI(mousePosition, unitData);
                 }

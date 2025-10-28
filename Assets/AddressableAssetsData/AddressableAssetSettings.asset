@@ -15,7 +15,7 @@ MonoBehaviour:
   m_DefaultGroup: 2ab395a1f9022b54f9582df4dd76bb6e
   m_currentHash:
     serializedVersion: 2
-    Hash: ed6f4fac832e1dd141aa9863744c3fd5
+    Hash: 00000000000000000000000000000000
   m_OptimizeCatalogSize: 0
   m_BuildRemoteCatalog: 0
   m_BundleLocalCatalog: 0
@@ -88,6 +88,7 @@ MonoBehaviour:
     m_LabelNames:
     - default
     - Chess
+    - EnemyChess
   m_SchemaTemplates: []
   m_GroupTemplateObjects:
   - {fileID: 11400000, guid: b9fd0654cba7f2847af08c46083e10f4, type: 2}

@@ -23,9 +23,10 @@ public class UnitCoreController : MonoBehaviour
     [Header("Deploy Settings")]
     // 存储加载完成的所有 UnitData
     private List<UnitData> allUnitConfigurations = new List<UnitData>();
+    private List<UnitData> allEnemyConfigurations = new List<UnitData>();
     [SerializeField]
     private string meUnitConfigLabel = "Chess";
-    private string enemyConfigLabel = "enemyChess";
+    private string enemyConfigLabel = "EnemyChess";
 
     private void Awake()
     {
@@ -34,8 +35,8 @@ public class UnitCoreController : MonoBehaviour
             Instance = this;
             DontDestroyOnLoad(gameObject);
             // 加载单位数据
-            LoadAllUnitData(meUnitConfigLabel);
-            LoadAllUnitData(enemyConfigLabel);
+            LoadUnitData(meUnitConfigLabel, allUnitConfigurations);
+            LoadUnitData(enemyConfigLabel, allEnemyConfigurations);
         }
         else
         {
@@ -68,7 +69,7 @@ public class UnitCoreController : MonoBehaviour
         }
     }
     // 加载单位资产
-    public void LoadAllUnitData(string label)
+    public void LoadUnitData(string label, List<UnitData> targetList)
     {
         // Addressables.LoadAssetsAsync 方法返回一个异步操作句柄 (AsyncOperationHandle)
         // 它会加载所有匹配标签的 T 类型资产
@@ -80,22 +81,27 @@ public class UnitCoreController : MonoBehaviour
                 // Debug.Log($"Loaded asset: {unitData.UnitName}");
             }
         );
-
+        loadHandle.Completed += (handle) =>
+        {
+            // 调用通用的完成处理方法，并将捕获的变量传入
+            OnLoadingComplete(handle, targetList);
+        };
         // 关键：等待异步操作完成
-        loadHandle.Completed += OnUnitDataLoadingComplete;
+        /*loadHandle.Completed += OnUnitDataLoadingComplete;*/
     }
     // 异步加载完成
-    private void OnUnitDataLoadingComplete(AsyncOperationHandle<IList<UnitData>> handle)
+    private void OnLoadingComplete(AsyncOperationHandle<IList<UnitData>> handle, List<UnitData> targetList)
     {
         if (handle.Status == AsyncOperationStatus.Succeeded)
         {
             // 将加载到的资产列表存储起来
-            allUnitConfigurations = handle.Result.ToList();
+            targetList.Clear(); // 确保清空旧数据
+            targetList.AddRange(handle.Result);
 
-            Debug.Log($"Addressables: 成功加载 {allUnitConfigurations.Count} 个 UnitData 资产。");
+            Debug.Log($"Addressables: 成功加载 {targetList.Count} 个 UnitData 资产。");
 
             List<string> teamNames = new List<string>();
-            foreach (UnitData unitData in allUnitConfigurations)
+            foreach (UnitData unitData in targetList)
             {
                 teamNames.Add(unitData.name);
             }

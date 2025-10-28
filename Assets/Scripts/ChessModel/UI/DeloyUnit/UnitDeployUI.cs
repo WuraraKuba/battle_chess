@@ -12,12 +12,15 @@ public class UnitDeployUI : MonoBehaviour
     // 动态创建按钮
     public void DeployButtons(List<UnitData> unitDatas, Vector3 DeployLoc, ref List<GameObject> activeButtons)
     {
+        Debug.Log("传进来的数目" + unitDatas.Count);
         ClearDeployButtons(ref activeButtons);
         if (unitDatas == null || unitDatas.Count == 0) return;
         else
         {
+            
             for (int i=0; i<unitDatas.Count; i++)
             {
+                Debug.Log(unitDatas[i]);
                 unitDatas[i].UnitLocation = DeployLoc;
                 GameObject newButtonObj = Instantiate(unitDeployButtonPrefab, transform);
                 activeButtons.Add(newButtonObj);

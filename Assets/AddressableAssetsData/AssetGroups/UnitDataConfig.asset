@@ -27,7 +27,7 @@ MonoBehaviour:
     m_Address: Chess2
     m_ReadOnly: 0
     m_SerializedLabels:
-    - Chess
+    - EnemyChess
     FlaggedDuringContentUpdateRestriction: 0
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 3ef4853b01dfbf142a258f4737653950, type: 2}
