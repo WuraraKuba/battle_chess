@@ -3,6 +3,7 @@ using MapTileGridCreator.CubeImplementation;
 using MapTileGridCreator.HexagonalImplementation;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 /// <summary>
@@ -19,7 +20,7 @@ public class GridMapController : MonoBehaviour
 
     [SerializeField]
     private GameObject GridBaseMap;
-
+    private List<Vector3Int> hexGridIndexes = new List<Vector3Int>();
     private CubeGrid cubeGrid;
     private HexagonalGrid hexagonalGrid;
 
@@ -42,21 +43,24 @@ public class GridMapController : MonoBehaviour
         }
         cubeGrid = GridBaseMap.GetComponent<CubeGrid>();
         hexagonalGrid = GridBaseMap.GetComponent<HexagonalGrid>();
+        // 遍历其中一个的子对象, 暂时只有hex的
+        foreach (Transform child in hexagonalGrid.transform)
+        {
+            if (child != null)
+            {
+                Cell childCell = child.gameObject.GetComponent<Cell>();
+                hexGridIndexes.Add(childCell.GetIndex());
+            }
+        }
         gridService = new HexGridService(hexagonalGrid);
         hexAStarPathfinding = new HexAStarPathfinding(gridService);
         InitializeCostMap(20, 20);
         
     }
-    // Start is called before the first frame update
-    void Start()
+    
+    public List<Vector3Int> MapGridIndexes()
     {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        return hexGridIndexes;
     }
     /// <summary>
     /// 用于接收现实坐标，然后将其转成地图索引
@@ -167,6 +171,18 @@ public class GridMapController : MonoBehaviour
         return pathPositions;
     }
 
+    public void UnitMovementRange(Vector3Int startIndex, float AP)
+    {
+        if (costMap == null)
+        {
+            Debug.LogError("成本地图未初始化！");
+        }
+        List<Vector3Int> rangeIndexes = hexAStarPathfinding.MoveRange(startIndex, AP, costMap);
+        // 通过UI高亮这些敌方
+        Debug.Log("可达范围" + rangeIndexes.Count);
+
+    } 
+
     /// <summary>
     /// 成本地图初始化
     /// </summary>
@@ -186,6 +202,8 @@ public class GridMapController : MonoBehaviour
             }
         }
     }
+
+
 
 
 

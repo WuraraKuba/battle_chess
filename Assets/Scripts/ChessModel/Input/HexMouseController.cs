@@ -93,7 +93,6 @@ public class HexMouseController : MonoBehaviour
                     // 当前属于部署模式下
                     // 获取UnitDatas
                     List<UnitData> unitData = UnitCoreController.Instance.getOurTeam();
-                    Debug.Log("MD_TEAM"+unitData.Count);
                     // 将打开棋子选择UI
                     MapUIController.Instance.PopulateUnitSelectionUI(mousePosition, unitData);
                 }
@@ -127,6 +126,9 @@ public class HexMouseController : MonoBehaviour
                             selectedUnit = hitObject;
                             UnitComponent unitComponent = hitObject.GetComponent<UnitComponent>();
                             startPosition = unitComponent.GetLocation();
+                            Vector3Int startIndex = GridMapController.Instance.Position2HexIndex(startPosition.Value);
+                            // 测试洪泛算法
+                            GridMapController.Instance.UnitMovementRange(startIndex, 1);
                         }
                     
                     }

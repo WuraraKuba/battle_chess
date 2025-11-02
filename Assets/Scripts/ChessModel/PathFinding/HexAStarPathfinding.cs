@@ -1,6 +1,6 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class HexAStarPathfinding
@@ -12,6 +12,39 @@ public class HexAStarPathfinding
     public HexAStarPathfinding(IHexGridService gridService)
     {
         _gridService = gridService ?? throw new ArgumentNullException(nameof(gridService));
+    }
+    // 可达范围
+    public List<Vector3Int> MoveRange(Vector3Int startIndex, float movementRange, float[,] costMap)
+    {
+        Dictionary<Vector3Int, float> minCosts = new Dictionary<Vector3Int, float>();
+        minCosts[startIndex] = 0;
+        Queue<Vector3Int> frontier = new Queue<Vector3Int>();
+        
+        frontier.Enqueue(startIndex);
+        HashSet<Vector3Int> gridInRange = new HashSet<Vector3Int>();
+        while (frontier.Count > 0)
+        {
+            Vector3Int currentIndex = frontier.Dequeue();
+            float currentCost = minCosts[currentIndex];
+            if (currentCost > movementRange) continue;
+            gridInRange.Add(currentIndex); // 因为是HashSet，所以不会重复
+            // 探索当前索引的邻居
+            var neighboursData = _gridService.GetHexNeighbours(currentIndex, costMap);
+            foreach (var (costFactor, neighbourIndex) in neighboursData)
+            {
+                // 将对应cost比较后加入
+                float neighborCost = currentCost + costFactor;
+                if (neighborCost > movementRange) continue;
+                if (!minCosts.ContainsKey(neighbourIndex) || neighborCost < minCosts[neighbourIndex])
+                {
+                    minCosts[neighbourIndex] = neighborCost;
+                    frontier.Enqueue(neighbourIndex);
+                }
+            }
+        }
+
+        return gridInRange.ToList();
+
     }
 
     /// <summary>
@@ -35,8 +68,6 @@ public class HexAStarPathfinding
         // ------------------------------------------------------
         // B. 初始化起点
         // ------------------------------------------------------
-        Debug.Log("起点 " + start);
-        Debug.Log("终点 " +  goal);
         HexCellNode startNode = new HexCellNode(start);
         startNode.GScore = 0; // 起点到起点的成本为 0
 
@@ -80,7 +111,6 @@ public class HexAStarPathfinding
                 }
 
                 // 计算通过当前节点到达邻居的【新 G-Score】
-                // 1.0f 是基础移动成本，costFactor 是地形成本因子（例如：沼泽是 3.0）
                 float newGScore = currentNode.GScore + 1.0f * costFactor;
 
                 // 确保邻居节点存在于 allNodes 字典中
@@ -184,6 +214,8 @@ public class HexAStarPathfinding
         path.Reverse(); // 反转列表，使路径从起点开始
         return path;
     }
+    
+
 
 
 }

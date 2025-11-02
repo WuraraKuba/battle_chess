@@ -33,7 +33,7 @@ public class HexGridService : IHexGridService
         //List<Vector3Int> neighborIndexes = _hexagonalGridInstance.GetNeighboursIndex(ref currentIndex);
         foreach (Vector3Int neighborIndex in neighborIndexes)
         {
-            neighboursData.Add((1.0f, neighborIndex));
+            neighboursData.Add((1.0f, neighborIndex));  // 目前，所有格子相邻cost都为1，没用costMap数据
         }
         return neighboursData;
     }

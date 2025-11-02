@@ -8,6 +8,7 @@ using UnityEngine.ResourceManagement.AsyncOperations; // 用于异步操作句�
 /// <summary>
 /// 主要负责对UnitManager进行处理
 /// 加载待选单位，部署啊，消失啊，统计啊什么的
+/// 状态切换啥的也要
 /// </summary>
 public class UnitCoreController : MonoBehaviour
 {
@@ -53,17 +54,14 @@ public class UnitCoreController : MonoBehaviour
         GameObject unitManagerObject = GameObject.FindGameObjectWithTag("Unit");
         if (unitManagerObject != null)
         {
-            Debug.Log("游戏初始化");
             Transform enemyUnitsPoolTransform = unitManagerObject.transform.Find("EnemyUnitsPool");
             Transform ourUnitPoolTransform = unitManagerObject.transform.Find("OurUnitsPool");
             if (enemyUnitsPoolTransform != null)
             {
-                Debug.Log("敌人池初始化");
                 EnemyUnitsPool = enemyUnitsPoolTransform.gameObject;
             }
             if (ourUnitPoolTransform != null)
             {
-                Debug.Log("友方池初始化");
                 OurUnitsPool = ourUnitPoolTransform.gameObject;
             }
         }
