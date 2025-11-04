@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 /// <summary>
 /// 借助Grid3D之类的创建了地图，现在创建这个Controller去对地图进行管理
@@ -178,10 +179,21 @@ public class GridMapController : MonoBehaviour
             Debug.LogError("成本地图未初始化！");
         }
         List<Vector3Int> rangeIndexes = hexAStarPathfinding.MoveRange(startIndex, AP, costMap);
-        // 通过UI高亮这些敌方
-        Debug.Log("可达范围" + rangeIndexes.Count);
+        // 根据Indexes获取cells
+        List<Cell> cells = GetCellByIndex(rangeIndexes);
+        // 根据Cell去渲染
+
+        MainRenderController.Instance.MapMoveRangeHighLight(cells);
 
     } 
+
+    public void SelectedCell(Vector3 mousePosition)
+    {
+        Vector3Int index = hexagonalGrid.GetIndexByPosition(ref mousePosition);
+        // overload
+        Cell selectedCell = GetCellByIndex(index);
+        MainRenderController.Instance.SingleCellHighLight(selectedCell);
+    }
 
     /// <summary>
     /// 成本地图初始化
@@ -201,6 +213,23 @@ public class GridMapController : MonoBehaviour
                 costMap[y, x] = 1.0f;
             }
         }
+    }
+
+    private List<Cell> GetCellByIndex(List<Vector3Int> indexes) 
+    {
+        List<Cell> cells = new List<Cell>();
+        for (int i = 0; i < indexes.Count; i++)
+        {
+            Vector3Int index = indexes[i];
+            cells.Add(hexagonalGrid.GetCellByIndex(ref index));
+        }
+        return cells;
+    }
+
+    private Cell GetCellByIndex(Vector3Int index)
+    {
+        Cell cell = hexagonalGrid.GetCellByIndex(ref index);
+        return cell;
     }
 
 

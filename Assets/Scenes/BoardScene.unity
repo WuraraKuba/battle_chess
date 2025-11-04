@@ -1429,6 +1429,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1913079887347622902, guid: edd5ef1a4310d7d43bce80143b534394, type: 3}
+      propertyPath: m_RenderingLayerMask
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4024885807784508158, guid: edd5ef1a4310d7d43bce80143b534394, type: 3}
       propertyPath: m_Name
       value: 0_0_1_Empty
@@ -4076,7 +4080,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   EnemyUnitsPool: {fileID: 0}
   OurUnitsPool: {fileID: 0}
-  unitConfigLabel: Chess
+  meUnitConfigLabel: Chess
 --- !u!1001 &1294824636
 PrefabInstance:
   m_ObjectHideFlags: 0

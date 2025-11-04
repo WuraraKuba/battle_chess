@@ -16,3 +16,4 @@ MonoBehaviour:
   UnitName: UnitTest1
   UnitLocation: {x: 0.8660254, y: 0.5, z: 4.5}
   isEnemy: 0
+  AP: 3

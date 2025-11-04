@@ -100,6 +100,8 @@ public class HexMouseController : MonoBehaviour
                 {
                     if (startPosition != null)
                     {
+                        // 清除高亮
+                        MainRenderController.Instance.ClearMoveRangeHighlights();
                         // 此时这个位置将是终点
 
                         endPosition = mousePosition;
@@ -128,7 +130,7 @@ public class HexMouseController : MonoBehaviour
                             startPosition = unitComponent.GetLocation();
                             Vector3Int startIndex = GridMapController.Instance.Position2HexIndex(startPosition.Value);
                             // 测试洪泛算法
-                            GridMapController.Instance.UnitMovementRange(startIndex, 1);
+                            GridMapController.Instance.UnitMovementRange(startIndex, unitComponent.AP);
                         }
                     
                     }
@@ -140,10 +142,23 @@ public class HexMouseController : MonoBehaviour
             {
                 startPosition = null;
                 endPosition = null;
-                MainRenderController.Instance.ClearKeepHighlight();
-                MainRenderController.Instance.ClearHighlight();
+                /*MainRenderController.Instance.ClearKeepHighlight();
+                MainRenderController.Instance.ClearHighlight();*/
+                MainRenderController.Instance.ClearMoveRangeHighlights();
+                MainRenderController.Instance.ClearSingleCellHighlight();
             }
-            // 高亮部分,针对地块
+            // 高亮部分，针对鼠标悬停部分
+            if (hitObject.layer == 7)
+            {
+                // 不点击时
+                // 如果 position没变，就不要改了
+                if (mousePosition != lastCellPosition)
+                {
+                    GridMapController.Instance.SelectedCell(mousePosition);
+                }
+
+            }
+            /*// 高亮部分,针对地块
             if(MainRenderController.Instance != null)
             {
                 float cellSize = GridMapController.Instance.GetHexMapCellSize();
@@ -176,7 +191,7 @@ public class HexMouseController : MonoBehaviour
                     endPosition = null;
 
                 }
-            }
+            }*/
         }
     }
 

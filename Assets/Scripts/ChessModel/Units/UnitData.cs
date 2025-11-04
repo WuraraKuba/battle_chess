@@ -21,4 +21,6 @@ public class UnitData : ScriptableObject
 
     public bool isEnemy;
 
+    public int AP;  // ÐÐ¶¯Á¦
+
 }

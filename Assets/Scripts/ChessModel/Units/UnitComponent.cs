@@ -10,6 +10,7 @@ public class UnitComponent : MonoBehaviour
 {
     // 暂时只弄个位置
     public Vector3 UnitLocation;
+    public int AP; // 行动力
     // 加个是否是敌人的判断
     public bool isEnemy;
     public void Initialize(UnitData data)
@@ -19,6 +20,7 @@ public class UnitComponent : MonoBehaviour
 
         // 1. 从数据资产中获取属性
         UnitLocation = data.UnitLocation;
+        AP = data.AP;
         // 3. (可选) 可以在这里设置单位的视觉或行为逻辑
         Debug.Log($"单位初始化成功");
     }

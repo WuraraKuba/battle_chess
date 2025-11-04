@@ -1,3 +1,6 @@
+using MapTileGridCreator.Core;
+using MapTileGridCreator.CubeImplementation;
+using MapTileGridCreator.HexagonalImplementation;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
@@ -17,6 +20,8 @@ public class MainRenderController : MonoBehaviour
     // 当前处理的高亮单位
     private GameObject currentHighlightInstance;
     private GameObject currentKeepHighlightInstance;
+    private List<Cell> currentHighlightedCells = new List<Cell>();
+    private Cell currentHighlightCell;
 
     private void Awake()
     {
@@ -30,17 +35,6 @@ public class MainRenderController : MonoBehaviour
         {
             Destroy(gameObject);
         }
-    }
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     // 是用于正方格
@@ -81,7 +75,82 @@ public class MainRenderController : MonoBehaviour
         float scaleSize = cellSize * 0.95f;
         currentKeepHighlightInstance.transform.localScale = new Vector3(scaleSize, 0.01f, scaleSize);
     }
+    public void MapMoveRangeHighLight(List<Cell> cells)
+    {
+        if (currentHighlightedCells != null) 
+        {
+            currentHighlightedCells.Clear();
+        }
+        
+        currentHighlightedCells = cells;
+        int layerIndex = LayerMask.NameToLayer("outline");
+        layerIndex = 8;
+        if (layerIndex != -1)
+        {
+            uint outlineMask = 1u << layerIndex;
+            foreach (Cell cell in currentHighlightedCells)
+            {
+                MeshRenderer meshRenderer = cell.gameObject.GetComponentInChildren<MeshRenderer>();
+                // 修改mask
+                if (meshRenderer != null)
+                {
+                    // 将 MeshRenderer 的 Rendering Layer Mask 设置为 OUTLINE_MASK
+                    meshRenderer.renderingLayerMask = outlineMask;
+                }
+            }
+        }
+    }
+    public void SingleCellHighLight(Cell selectCell)
+    {
+        if (currentHighlightCell != null)
+        {
+            ClearSingleCellHighlight();
+            currentHighlightCell = null;
+        }
 
+        currentHighlightCell = selectCell;
+        int layerIndex = LayerMask.NameToLayer("outline");
+        layerIndex = 9;
+        if (layerIndex != -1)
+        {
+            uint outlineMask = 1u << layerIndex;
+            MeshRenderer meshRenderer = currentHighlightCell.gameObject.GetComponentInChildren<MeshRenderer>();
+            meshRenderer.renderingLayerMask = outlineMask;
+        }
+    }
+    public void ClearMoveRangeHighlights()
+    {
+        if (currentHighlightedCells == null || currentHighlightedCells.Count == 0)
+        {
+            return;
+        }
+
+        foreach (Cell cell in currentHighlightedCells)
+        {
+            // 确保对象没有被销毁
+            if (cell != null)
+            {
+                MeshRenderer renderer = cell.GetComponentInChildren<MeshRenderer>(true);
+
+                if (renderer != null)
+                {
+                    // 将 Mask 设置为 0，即不再被 Outline 相机渲染
+                    renderer.renderingLayerMask = 12;
+                }
+            }
+        }
+        currentHighlightedCells.Clear();
+    }
+    public void ClearSingleCellHighlight()
+    {
+        if (currentHighlightCell == null)
+        {
+            return;
+        }
+        MeshRenderer renderer = currentHighlightCell.GetComponentInChildren<MeshRenderer>(true);
+        renderer.renderingLayerMask = 12;
+        currentHighlightCell = null;
+    }
 
     public void ClearHighlight()
     {
