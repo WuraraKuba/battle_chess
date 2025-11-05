@@ -74,6 +74,7 @@ public class HexMouseController : MonoBehaviour
         if (Physics.Raycast(ray, out hit, 1000f, RaycastIgnoreLayerMask))
         {
             GameObject hitObject = hit.transform.gameObject;
+            
             if (IsPointerOverUIObject())
             {// 检测是否在UI上
                 return;
@@ -81,9 +82,21 @@ public class HexMouseController : MonoBehaviour
             // 尝试根据这个坐标，获取方块
             if (GridMapController.Instance != null)
             {
-                mousePosition = GridMapController.Instance.GetHexTopCenterPositionByClickPosition(hit.point);
-                
+                mousePosition = GridMapController.Instance.GetHexTopCenterPositionByClickPosition(hitObject.transform.position);
+
             }
+
+            // 高亮部分，针对鼠标悬停部分
+            // 如果 position没变，就不要改了
+            if (hitObject.layer == 7)
+            {
+                if (mousePosition != lastCellPosition)
+                {
+                    GridMapController.Instance.SelectedCell(mousePosition);
+                }
+            }
+            
+
             // 鼠标左键点击逻辑：意味开始输入起始点
             if (Input.GetMouseButtonDown(0))
             {
@@ -100,11 +113,18 @@ public class HexMouseController : MonoBehaviour
                 {
                     if (startPosition != null)
                     {
+
+                        endPosition = mousePosition;
+                        if (!GridMapController.Instance.TargetLocReachedAble(endPosition.Value, startPosition.Value, 3.0f)) 
+                        {
+                            Debug.Log("到不了然后呢");
+                            endPosition = null;
+                            return; }
                         // 清除高亮
                         MainRenderController.Instance.ClearMoveRangeHighlights();
                         // 此时这个位置将是终点
 
-                        endPosition = mousePosition;
+                        
                         // 根据起点与终点，算出路径吧
                         Vector3Int startIndex = GridMapController.Instance.Position2HexIndex(startPosition.Value);
                         Vector3Int endIndex = GridMapController.Instance.Position2HexIndex(endPosition.Value);
@@ -147,17 +167,7 @@ public class HexMouseController : MonoBehaviour
                 MainRenderController.Instance.ClearMoveRangeHighlights();
                 MainRenderController.Instance.ClearSingleCellHighlight();
             }
-            // 高亮部分，针对鼠标悬停部分
-            if (hitObject.layer == 7)
-            {
-                // 不点击时
-                // 如果 position没变，就不要改了
-                if (mousePosition != lastCellPosition)
-                {
-                    GridMapController.Instance.SelectedCell(mousePosition);
-                }
-
-            }
+            
             /*// 高亮部分,针对地块
             if(MainRenderController.Instance != null)
             {

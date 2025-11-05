@@ -187,6 +187,18 @@ public class GridMapController : MonoBehaviour
 
     } 
 
+    public bool TargetLocReachedAble(Vector3 endPosition, Vector3 startPostion, float AP)
+    {
+        bool reachedAble = false;
+        Vector3Int startIndex = hexagonalGrid.GetIndexByPosition(ref startPostion);
+        Vector3Int endIndex = hexagonalGrid.GetIndexByPosition(ref endPosition);
+        List<Vector3Int> rangeIndexes = hexAStarPathfinding.MoveRange(startIndex, AP, costMap);
+        if (rangeIndexes.Contains(endIndex)){
+            reachedAble = true;
+        }
+        return reachedAble;
+    }
+
     public void SelectedCell(Vector3 mousePosition)
     {
         Vector3Int index = hexagonalGrid.GetIndexByPosition(ref mousePosition);
