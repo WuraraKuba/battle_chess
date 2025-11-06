@@ -3,6 +3,7 @@ using MapTileGridCreator.CubeImplementation;
 using MapTileGridCreator.HexagonalImplementation;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -28,7 +29,7 @@ public class GridMapController : MonoBehaviour
     // 寻路部分
     private IHexGridService gridService;
     private HexAStarPathfinding hexAStarPathfinding;
-    private float[,] costMap;
+    private Dictionary<Vector3Int, float> costMap;
 
     private void Awake()
     {
@@ -55,7 +56,7 @@ public class GridMapController : MonoBehaviour
         }
         gridService = new HexGridService(hexagonalGrid);
         hexAStarPathfinding = new HexAStarPathfinding(gridService);
-        InitializeCostMap(20, 20);
+        InitializeCostMap();
         
     }
     
@@ -150,7 +151,7 @@ public class GridMapController : MonoBehaviour
     /// <param name="start"></param>
     /// <param name="goal"></param>
     /// <returns></returns>
-    public List<Vector3> FindPath(Vector3Int start, Vector3Int goal)
+    public List<Vector3> FindPath(Vector3 start, Vector3 goal)
     {
         // 确保 costMap 在这里是可用的
         if (costMap == null)
@@ -158,7 +159,9 @@ public class GridMapController : MonoBehaviour
             Debug.LogError("成本地图未初始化！");
             return new List<Vector3>();
         }
-        List<Vector3Int> pathIndexes = hexAStarPathfinding.FindPath(start, goal, costMap);
+        Vector3Int startIndex = hexagonalGrid.GetIndexByPosition(ref start);
+        Vector3Int goalIndex = hexagonalGrid.GetIndexByPosition(ref goal);
+        List<Vector3Int> pathIndexes = hexAStarPathfinding.FindPath(startIndex, goalIndex, costMap);
         // 将索引转成坐标
         List<Vector3> pathPositions = new List<Vector3>();
         for (int i = 0; i < pathIndexes.Count; i++)
@@ -185,7 +188,19 @@ public class GridMapController : MonoBehaviour
 
         MainRenderController.Instance.MapMoveRangeHighLight(cells);
 
-    } 
+    }
+    public List<Vector3Int> UnitMovementRangeForAI(Vector3 startPosition, float AP)
+    {
+        Vector3Int startIndex = hexagonalGrid.GetIndexByPosition(ref startPosition);
+        if (costMap == null)
+        {
+            Debug.LogError("成本地图未初始化！");
+        }
+        List<Vector3Int> rangeIndexes = hexAStarPathfinding.MoveRange(startIndex, AP, costMap);
+        // 根据Indexes获取cells
+        return rangeIndexes;
+
+    }
 
     public bool TargetLocReachedAble(Vector3 endPosition, Vector3 startPostion, float AP)
     {
@@ -210,19 +225,40 @@ public class GridMapController : MonoBehaviour
     /// <summary>
     /// 成本地图初始化
     /// </summary>
-    /// <param name="width"></param>
-    /// <param name="height"></param>
     /// <returns></returns>
-    private void InitializeCostMap(int width, int height)
+    private void InitializeCostMap()
     {
-        costMap = new float[height, width]; // 习惯上二维数组是 [行, 列]，对应 [Y, X] 或 [MapHeight, MapWidth]
-
-        // 遍历所有单元格，设置成本为 1.0
-        for (int y = 0; y < height; y++)
+        costMap = new Dictionary<Vector3Int, float>();
+        foreach (Transform child in hexagonalGrid.transform)
         {
-            for (int x = 0; x < width; x++)
+            if (child != null)
             {
-                costMap[y, x] = 1.0f;
+                Cell childCell = child.gameObject.GetComponent<Cell>();
+                Vector3Int index = childCell.GetIndex();
+                string name = childCell.name;
+                string[] parts = name.Split('_');
+                string type = parts.Last();
+                float cost;
+                switch (type.ToLower()) 
+                {
+                    case "grass":
+                        cost = 2.0f;
+                        break;
+                    case "ground":
+                        cost = 1.0f;
+                        break;
+                    case "water":
+                        cost = 3.0f;
+                        break;
+                    case "empty":
+                        cost = float.MaxValue;
+                        break;
+                    default:
+                        cost = 9.0f;
+                        break;
+                }
+                costMap.Add(index, cost);
+
             }
         }
     }

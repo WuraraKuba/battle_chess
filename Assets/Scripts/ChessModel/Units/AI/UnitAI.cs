@@ -3,14 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 
 // 有限状态机FSM
+// 挂载在敌方单位上
 public class UnitAI : MonoBehaviour
 {
-    private Vector3 ChooseRandomTarget(List<Vector3> availableMovePositions)
+    private Vector3Int ChooseRandomTarget(List<Vector3Int> availableMovePositions)
     {
         if (availableMovePositions.Count == 0)
         {
             // 没有地方可去，返回当前位置
-            return transform.position;
+
+            // return transform.position;
         }
 
         // 随机选择一个索引
@@ -21,18 +23,23 @@ public class UnitAI : MonoBehaviour
     }
 
     // 决策逻辑
-/*    public void MakeDecision()
+    public void MakeDecision()
     {
+
+        // 获取敌方单位上的UnitComponent组件
+        UnitComponent _unitComponent = GetComponent<UnitComponent>();
         // 1. 获取所有可移动的位置（假设这是你的寻路方法）
-        List<Vector3> reachablePositions = PathfindingManager.CalculateReachableTiles(currentPosition, movementRange);
+        List<Vector3Int> reachableIndexes = GridMapController.Instance.UnitMovementRangeForAI(_unitComponent.UnitLocation, _unitComponent.AP);
 
         // 2. 随机目标点
-        Vector3 targetPosition = ChooseRandomTarget(reachablePositions);
+        Vector3Int targetPosition = ChooseRandomTarget(reachableIndexes);
 
-        // 3. 调用你的移动逻辑
-        StartMoveSequence(targetPosition);
+        // 3. 计算移动移动路径
+        // 暂时随便一下
+  
+        List<Vector3> path = GridMapController.Instance.FindPath(_unitComponent.UnitLocation, targetPosition);
+        UnitMapMovementController.Instance.StartMovement(transform.gameObject, path);
 
-        // 4. 切换状态到 Moving
-        SetState(AIState.Moving);
-    }*/
+
+    }
 }

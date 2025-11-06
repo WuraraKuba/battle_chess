@@ -21,7 +21,7 @@ public class HexGridService : IHexGridService
         _hexagonalGridInstance = grid;
     }
 
-    public List<(float costFactor, Vector3Int index)> GetHexNeighbours(Vector3Int currentIndex, float[,] costMap)
+    public List<(float costFactor, Vector3Int index)> GetHexNeighbours(Vector3Int currentIndex, Dictionary<Vector3Int, float> costMap)
     {
         List<(float costFactor, Vector3Int index)> neighboursData = new List<(float costFactor, Vector3Int index)>();
         List<Cell> neighbourCells = _hexagonalGridInstance.GetNeighboursCell(ref currentIndex);
@@ -33,7 +33,7 @@ public class HexGridService : IHexGridService
         //List<Vector3Int> neighborIndexes = _hexagonalGridInstance.GetNeighboursIndex(ref currentIndex);
         foreach (Vector3Int neighborIndex in neighborIndexes)
         {
-            neighboursData.Add((1.0f, neighborIndex));  // 目前，所有格子相邻cost都为1，没用costMap数据
+            neighboursData.Add((costMap[neighborIndex], neighborIndex));  // 目前，所有格子相邻cost都为1，没用costMap数据
         }
         return neighboursData;
     }

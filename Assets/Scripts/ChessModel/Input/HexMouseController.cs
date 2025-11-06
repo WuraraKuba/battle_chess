@@ -95,6 +95,10 @@ public class HexMouseController : MonoBehaviour
                     GridMapController.Instance.SelectedCell(mousePosition);
                 }
             }
+            else
+            {
+                MainRenderController.Instance.ClearSingleCellHighlight();
+            }
             
 
             // 鼠标左键点击逻辑：意味开始输入起始点
@@ -117,7 +121,6 @@ public class HexMouseController : MonoBehaviour
                         endPosition = mousePosition;
                         if (!GridMapController.Instance.TargetLocReachedAble(endPosition.Value, startPosition.Value, 3.0f)) 
                         {
-                            Debug.Log("到不了然后呢");
                             endPosition = null;
                             return; }
                         // 清除高亮
@@ -126,11 +129,9 @@ public class HexMouseController : MonoBehaviour
 
                         
                         // 根据起点与终点，算出路径吧
-                        Vector3Int startIndex = GridMapController.Instance.Position2HexIndex(startPosition.Value);
-                        Vector3Int endIndex = GridMapController.Instance.Position2HexIndex(endPosition.Value);
+                        List<Vector3> path = GridMapController.Instance.FindPath(startPosition.Value, endPosition.Value);
                         startPosition = null;
                         endPosition = null;
-                        List<Vector3> path = GridMapController.Instance.FindPath(startIndex, endIndex);
                         // 但在此之前，先把起始点的渲染做好
                         UnitMapMovementController.Instance.StartMovement(selectedUnit, path);
 /*                        // 移动完成，调整Unit位置

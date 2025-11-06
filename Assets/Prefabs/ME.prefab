@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 2851593727767411525}
   - component: {fileID: 8682701698485295562}
   - component: {fileID: 2947445352916346604}
+  - component: {fileID: 6806578438733895456}
   m_Layer: 8
   m_Name: ME
   m_TagString: Untagged
@@ -149,3 +150,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UnitLocation: {x: 0, y: 0, z: 0}
+  AP: 0
+  isEnemy: 0
+--- !u!114 &6806578438733895456
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7028270251229995716}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 898ae76a633716c4682d201365242045, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

@@ -14,7 +14,7 @@ public class HexAStarPathfinding
         _gridService = gridService ?? throw new ArgumentNullException(nameof(gridService));
     }
     // 可达范围
-    public List<Vector3Int> MoveRange(Vector3Int startIndex, float movementRange, float[,] costMap)
+    public List<Vector3Int> MoveRange(Vector3Int startIndex, float movementRange, Dictionary<Vector3Int, float> costMap)
     {
         Dictionary<Vector3Int, float> minCosts = new Dictionary<Vector3Int, float>();
         minCosts[startIndex] = 0;
@@ -54,7 +54,7 @@ public class HexAStarPathfinding
     /// <param name="goal"></param>
     /// <param name="costMap"></param>
     /// <returns></returns>
-    public List<Vector3Int> FindPath(Vector3Int start, Vector3Int goal, float[,] costMap)
+    public List<Vector3Int> FindPath(Vector3Int start, Vector3Int goal, Dictionary<Vector3Int, float> costMap)
     {
         // 存储所有已创建的 AStarNode，方便通过索引快速查找
         Dictionary<Vector3Int, HexCellNode> allNodes = new Dictionary<Vector3Int, HexCellNode>();

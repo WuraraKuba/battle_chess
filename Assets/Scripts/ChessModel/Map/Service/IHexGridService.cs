@@ -12,7 +12,7 @@ public interface IHexGridService
     /// <param name="currentIndex"></param>
     /// <param name="costMap"></param>
     /// <returns></returns>
-    List<(float costFactor, Vector3Int index)> GetHexNeighbours(Vector3Int currentIndex, float[,] costMap);
+    List<(float costFactor, Vector3Int index)> GetHexNeighbours(Vector3Int currentIndex, Dictionary<Vector3Int, float> costMap);
 
     // 计算六边形距离的启发式
     float CalculateHexDistance(Vector3Int nodeIndex, Vector3Int goalIndex);
