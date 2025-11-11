@@ -50,17 +50,17 @@ public class MainRenderController : MonoBehaviour
         float scaleSize = cellSize * 0.95f;
         currentHighlightInstance.transform.localScale = new Vector3(scaleSize, 0.01f, scaleSize);
     }
-    public void MapHexCellHighLight(Vector3 position, float cellSize)
-    {
+    public void MapHexCellHighLight(Vector3 position, GameObject Object)
+    {   // 查询传入的gameObject
+        Debug.Log("man");
         // 清除旧的高亮
         ClearHighlight();
-        // 实例化预制件
-        currentHighlightInstance = Instantiate(mapCellHighlightPrefab, transform);
-        // 设置高亮位置
-        currentHighlightInstance.transform.position = position;
-        // 设置高亮尺寸
-        float scaleSize = cellSize * 0.95f;
-        currentHighlightInstance.transform.localScale = new Vector3(scaleSize, 0.01f, scaleSize);
+        currentHighlightInstance = Object;
+        // 需要对不同的类别采取不同的策略，不过这里先算了
+        MeshRenderer meshRenderer = currentHighlightInstance.gameObject.GetComponentInChildren<MeshRenderer>();
+        int layerIndex = 9;
+        uint outlineMask = 1u << layerIndex;
+        meshRenderer.renderingLayerMask = outlineMask;
     }
 
     public void MapHexCellKeepHighLight(Vector3 position, float cellSize)
