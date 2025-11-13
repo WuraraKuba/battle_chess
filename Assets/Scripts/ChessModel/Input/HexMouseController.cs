@@ -104,7 +104,6 @@ public class HexMouseController : MonoBehaviour
             // 鼠标左键点击逻辑：意味开始输入起始点
             if (Input.GetMouseButtonDown(0))
             {
-                Debug.Log(GameController.Instance.GetGameStatus());
                 if (GameController.Instance.GetGameStatus() == GameStatus.BeforeGame)
                 {
                     // 当前属于部署模式下
@@ -122,7 +121,8 @@ public class HexMouseController : MonoBehaviour
                         if (!GridMapController.Instance.TargetLocReachedAble(endPosition.Value, startPosition.Value, 3.0f)) 
                         {
                             endPosition = null;
-                            return; }
+                            return; 
+                        }
                         // 清除高亮
                         MainRenderController.Instance.ClearMoveRangeHighlights();
                         // 此时这个位置将是终点

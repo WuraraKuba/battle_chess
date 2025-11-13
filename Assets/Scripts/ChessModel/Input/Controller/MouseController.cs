@@ -4,17 +4,14 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 
-// 操作基本类，用于定义基本的如射线检测之类的东西
-public class BaseMouseController : MonoBehaviour
+public class MouseController : MonoBehaviour
 {
-    public static BaseMouseController Instance { get; private set; }
-    // 射线检测 相关
-    private Ray ray;   // 射线检测
-    private RaycastHit hit;    // 用于存储射线检测的结果
-    private int RaycastIgnoreLayerMask;  // 射线检测需要忽略的
-    private Vector3 mousePosition;  // 当前指向位置
+    public static MouseController Instance;
 
+    public static MouseEntity mouseEntity;
+    private GameConfig _gameConfig;
     private IInputHandler inputHandler;
+
     private void Awake()
     {
         if (Instance == null)
@@ -22,58 +19,67 @@ public class BaseMouseController : MonoBehaviour
             Instance = this;
             // 确保它不会被销毁
             DontDestroyOnLoad(gameObject);
+            // 加载全局配置文件
+            _gameConfig = Resources.Load<GameConfig>("GameConfig");
+            int RaycastIgnoredLayerMask = ~LayerMask.GetMask("trigger", "Ignore Raycast"); 
+            mouseEntity = new MouseEntity(RaycastIgnoredLayerMask);
+            inputHandler = new InputHandler(mouseEntity);
         }
         else
         {
             Destroy(gameObject);
         }
-        //inputHandler = new InputHandler();
-        RaycastIgnoreLayerMask = ~LayerMask.GetMask("trigger", "Ignore Raycast");
     }
-    private void Update()
+
+    // Update is called once per frame
+    void Update()
     {
-        if (SceneManager.GetActiveScene().name != "BoardScene") // 这个后面要接口化
+        if (SceneManager.GetActiveScene().name != "BoardScene")
         {
             return; // 如果不在地图场景，直接退出 Update
         }
-        if (GameController.Instance.GetGameStatus() == GameStatus.InGameEnemy)  // 肯定也是要接口化的
+        if (GameController.Instance.GetGameStatus() == GameStatus.InGameEnemy)
         {  // 只在自己的回合内能操作
             return;
         }
-        ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out hit, 1000f, RaycastIgnoreLayerMask))
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit, 1000f, mouseEntity.RaycastIgnoreLayerMask))
         {
-            // UI检测
-            if (IsPointerOverUIObject())  // 也要接口化，乌拉
+            GameObject hitObject = hit.transform.gameObject;
+            if (IsPointerOverUIObject())
             {// 检测是否在UI上
                 return;
             }
-            GameObject hitObject = hit.transform.gameObject;
-            // 加问号是为了防止空引用异常而崩溃
-            inputHandler?.HandleHover(mousePosition, hitObject);
+            // 调用坐标转换接口
+            // 为mouseEntity.mousePosition赋值
+            mouseEntity.mousePosition = GridMapController.Instance.GetHexTopCenterPositionByClickPosition(hitObject.transform.position);
+            // 高亮接口
 
-  
+            // 点击接口
             if (Input.GetMouseButtonDown(0))  // 鼠标左键被点击
             {
+                Debug.Log("Hey");
                 // 当前游戏状态检查
                 if (GameController.Instance.GetGameStatus() == GameStatus.BeforeGame)
                 {
-                    // 部署接口
+                    // 部署接口，打算传入entity的引用
+                    List<UnitData> unitData = UnitCoreController.Instance.getOurTeam();
+                    // 将打开棋子选择UI
+                    MapUIController.Instance.PopulateUnitSelectionUI(mouseEntity.mousePosition, unitData);
                 }
                 else
                 {
-                    // 选中 + 移动
+                    // 移动接口
+                    inputHandler?.HandleLeftClick(hitObject);
                 }
-
-            }
-            if (Input.GetMouseButtonDown(1))  // 鼠标右键被点击
-            {
-                inputHandler?.HandleRightClick();
-            }
-
+             }
         }
 
+
+
     }
+    // 还没想好你放在哪呢
     private bool IsPointerOverUIObject()
     {
         // 1. 获取当前 EventSystem

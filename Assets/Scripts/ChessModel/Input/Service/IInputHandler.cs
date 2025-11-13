@@ -9,7 +9,7 @@ public interface IInputHandler
     void HandleHover(Vector3 hexPosition, GameObject hitObject);
 
     // 处理鼠标左键点击时的逻辑 (例如：选择单位、确认移动)
-    void HandleLeftClick(Vector3 hexPosition, GameObject hitObject);
+    void HandleLeftClick(GameObject hitObject);
 
     // 处理鼠标右键点击时的逻辑 (例如：取消选择、清除高亮)
     void HandleRightClick();
